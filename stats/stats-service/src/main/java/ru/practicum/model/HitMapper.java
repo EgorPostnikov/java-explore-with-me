@@ -3,6 +3,8 @@ package ru.practicum.model;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.HitDto;
 
+import java.time.LocalDateTime;
+
 
 @Service
 public class HitMapper {

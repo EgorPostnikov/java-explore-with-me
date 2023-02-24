@@ -13,8 +13,8 @@ import ru.practicum.storage.HitRepository;
 @AllArgsConstructor
 public class HitServiceImpl implements HitService{
     private static final Logger log = LoggerFactory.getLogger(HitServiceImpl.class);
-    HitRepository repository;
-    HitMapper mapper;
+    private final HitRepository repository;
+    private final HitMapper mapper;
     @Override
     public HitDto createHit(HitDto hitDto){
         Hit hit= repository.save(mapper.toHit(hitDto));

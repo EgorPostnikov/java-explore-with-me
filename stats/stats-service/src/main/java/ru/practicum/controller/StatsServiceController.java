@@ -10,11 +10,11 @@ import ru.practicum.service.HitService;
 @RequestMapping(path = "/hit")
 @RequiredArgsConstructor
 public class StatsServiceController {
-    HitService service;
+    private final HitService service;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public HitDto createBooking( @RequestBody HitDto entity)  {
+    public HitDto createHit( @RequestBody HitDto entity)  {
         return service.createHit(entity);
     }
 }
