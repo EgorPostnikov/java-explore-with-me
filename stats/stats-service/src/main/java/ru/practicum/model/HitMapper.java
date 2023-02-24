@@ -2,6 +2,7 @@ package ru.practicum.model;
 
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.HitDto;
+import ru.practicum.dto.StatsDto;
 
 import java.time.LocalDateTime;
 
@@ -27,4 +28,12 @@ public class HitMapper {
                 entity.getTimestamp());
         return hit;
     }
+    public StatsDto toStatsDto (Stats entity){
+        StatsDto stats = new StatsDto(
+                entity.getApp(),
+                entity.getUri(),
+                entity.getHits());
+    return stats;
+    }
+
 }
