@@ -19,5 +19,6 @@ public class Stats {
     private Integer id;
     private String app;
     private String uri;
+    @Transient
     private Integer hits;
 }

@@ -1,5 +1,6 @@
 package ru.practicum.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,10 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class StatsServiceController {
     private final StatService service;
+
 
     @PostMapping(path = "/hit")
     @ResponseStatus(HttpStatus.CREATED)
@@ -25,11 +27,10 @@ public class StatsServiceController {
 
     @GetMapping(path = "/stats")
     @ResponseStatus(HttpStatus.OK)
-    public StatsDto viewStats(@RequestParam (name = "start")LocalDateTime start,
-                             @RequestParam (name = "end")LocalDateTime end,
-                             @RequestParam (name = "uris") Collection<String> uris,
-                             @RequestParam (name = "unique", defaultValue = "false") Boolean unique)  {
-        StatsRequest request = new StatsRequest(start,end,uris,unique);
-        return service.viewStats(request);
+    public Collection <StatsDto> viewStats(@RequestParam LocalDateTime start,
+                             @RequestParam LocalDateTime end,
+                             @RequestParam  Collection<String> uris,
+                             @RequestParam (defaultValue = "false") Boolean unique){
+        return service.viewStats(new StatsRequest(start,end,uris,unique));
     }
 }
