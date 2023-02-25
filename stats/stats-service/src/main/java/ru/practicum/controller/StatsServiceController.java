@@ -9,15 +9,16 @@ import ru.practicum.dto.StatsDto;
 import ru.practicum.model.StatsRequest;
 import ru.practicum.service.StatService;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping
 @AllArgsConstructor
 public class StatsServiceController {
     private final StatService service;
-
 
     @PostMapping(path = "/hit")
     @ResponseStatus(HttpStatus.CREATED)
@@ -29,7 +30,7 @@ public class StatsServiceController {
     @ResponseStatus(HttpStatus.OK)
     public Collection <StatsDto> viewStats(@RequestParam LocalDateTime start,
                              @RequestParam LocalDateTime end,
-                             @RequestParam  Collection<String> uris,
+                             @RequestParam List<String> uris,
                              @RequestParam (defaultValue = "false") Boolean unique){
         return service.viewStats(new StatsRequest(start,end,uris,unique));
     }

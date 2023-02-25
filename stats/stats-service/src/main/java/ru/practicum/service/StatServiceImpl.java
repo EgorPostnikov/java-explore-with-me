@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.HitDto;
 import ru.practicum.dto.StatsDto;
+import ru.practicum.mapper.HitMapper;
 import ru.practicum.mapper.StatsMapper;
 import ru.practicum.model.Hit;
-import ru.practicum.mapper.HitMapper;
 import ru.practicum.model.Stats;
 import ru.practicum.model.StatsRequest;
 import ru.practicum.storage.StatRepository;
@@ -24,15 +24,21 @@ public class StatServiceImpl implements StatService {
     private final StatRepository repository;
 
     @Override
-    public HitDto createHit(HitDto hitDto){
-        Hit hit= repository.save(HitMapper.INSTANCE.toHit(hitDto));
+    public HitDto createHit(HitDto hitDto) {
+        Hit hit = repository.save(HitMapper.INSTANCE.toHit(hitDto));
         log.info("Hit with id #{} saved", hit.getId());
-    return HitMapper.INSTANCE.toHitDto(hit);
+        return HitMapper.INSTANCE.toHitDto(hit);
     }
 
     @Override
-    public Collection <StatsDto> viewStats(StatsRequest request) {
-        Collection <Stats> stats = repository.getStatsUnique(request.getStart(),request.getEnd(),request.getUris());
+    public Collection<StatsDto> viewStats(StatsRequest request) {
+        Collection<Stats> stats;
+        if (request.getUnique()) {
+            stats = repository.viewStatsUnique(request.getUris(), request.getStart(), request.getEnd());
+        } else {
+            stats = repository.viewStats(request.getUris(), request.getStart(), request.getEnd());
+        }
+        log.info("List of hits got, hits qty is - {} ", stats.size());
         return StatsMapper.INSTANCE.toStatsDtos(stats);
     }
 

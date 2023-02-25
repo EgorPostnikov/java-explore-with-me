@@ -8,11 +8,14 @@ import ru.practicum.model.Stats;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 public interface StatRepository extends JpaRepository<Hit, Long> {
 
-    @Query(" Select s.app,s.uri,count(s.id) from Stats s where s.uri= ?3")
-    Collection<Stats> getStatsUnique(LocalDateTime start,LocalDateTime end, Collection <String> uris);
+    @Query(name = "ViewStats", nativeQuery = true)
+    Collection<Stats> viewStats(List<String> uris, LocalDateTime start, LocalDateTime end);
+    @Query(name = "ViewStatsUnique", nativeQuery = true)
+    Collection<Stats> viewStatsUnique(List<String> uris, LocalDateTime start, LocalDateTime end);
 }
 
