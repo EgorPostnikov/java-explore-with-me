@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 public class StatsClient {
@@ -36,7 +37,7 @@ public class StatsClient {
     }
 
     public void hit() {
-        HitDto hit = new HitDto();
+        HitDto hit = new HitDto(10L, application, null, null, LocalDateTime.now());
         hit.setApp(application);
 
         try {
