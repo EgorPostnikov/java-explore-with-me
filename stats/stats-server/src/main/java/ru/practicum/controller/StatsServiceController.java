@@ -1,7 +1,6 @@
 package ru.practicum.controller;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.HitDto;
@@ -9,7 +8,6 @@ import ru.practicum.dto.StatsDto;
 import ru.practicum.model.StatsRequest;
 import ru.practicum.service.StatService;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -22,16 +20,16 @@ public class StatsServiceController {
 
     @PostMapping(path = "/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public HitDto createHit( @RequestBody HitDto entity)  {
+    public HitDto createHit(@RequestBody HitDto entity) {
         return service.createHit(entity);
     }
 
     @GetMapping(path = "/stats")
     @ResponseStatus(HttpStatus.OK)
-    public Collection <StatsDto> viewStats(@RequestParam LocalDateTime start,
-                             @RequestParam LocalDateTime end,
-                             @RequestParam List<String> uris,
-                             @RequestParam (defaultValue = "false") Boolean unique){
-        return service.viewStats(new StatsRequest(start,end,uris,unique));
+    public Collection<StatsDto> viewStats(@RequestParam LocalDateTime start,
+                                          @RequestParam LocalDateTime end,
+                                          @RequestParam List<String> uris,
+                                          @RequestParam(defaultValue = "false") Boolean unique) {
+        return service.viewStats(new StatsRequest(start, end, uris, unique));
     }
 }

@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class Stats {
-
     private String app;
     private String uri;
     private Long hits;

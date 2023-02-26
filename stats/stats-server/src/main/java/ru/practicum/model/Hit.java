@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.dto.StatsDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,11 +25,11 @@ import java.time.LocalDateTime;
                 "GROUP BY s.app, s.uri ORDER BY qty DESC",
         resultSetMapping = "StatsDtoMapping")
 @SqlResultSetMapping(name = "StatsDtoMapping",
-        classes = { @ConstructorResult(columns = {
-                        @ColumnResult(name = "app", type = String.class),
-                        @ColumnResult(name = "uri", type = String.class),
-                        @ColumnResult(name = "qty", type = Long.class)},
-                        targetClass = Stats.class)
+        classes = {@ConstructorResult(columns = {
+                @ColumnResult(name = "app", type = String.class),
+                @ColumnResult(name = "uri", type = String.class),
+                @ColumnResult(name = "qty", type = Long.class)},
+                targetClass = Stats.class)
         }
 )
 public class Hit {

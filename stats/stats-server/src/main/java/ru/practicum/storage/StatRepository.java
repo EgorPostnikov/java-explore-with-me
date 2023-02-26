@@ -15,6 +15,7 @@ public interface StatRepository extends JpaRepository<Hit, Long> {
 
     @Query(name = "ViewStats", nativeQuery = true)
     Collection<Stats> viewStats(List<String> uris, LocalDateTime start, LocalDateTime end);
+
     @Query(name = "ViewStatsUnique", nativeQuery = true)
     Collection<Stats> viewStatsUnique(List<String> uris, LocalDateTime start, LocalDateTime end);
 }

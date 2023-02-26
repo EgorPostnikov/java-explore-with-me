@@ -6,10 +6,8 @@ import ru.practicum.model.StatsRequest;
 
 import java.util.Collection;
 
-
 public interface StatService {
-
-    HitDto createHit (HitDto hitDto);
+    HitDto createHit(HitDto hitDto);
 
     Collection<StatsDto> viewStats(StatsRequest request);
 }
