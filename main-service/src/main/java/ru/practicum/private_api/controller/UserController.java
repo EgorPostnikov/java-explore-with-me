@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum.private_api.controller;
 
 
 import org.springframework.http.HttpStatus;
