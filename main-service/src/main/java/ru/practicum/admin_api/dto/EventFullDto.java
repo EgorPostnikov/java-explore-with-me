@@ -1,6 +1,4 @@
-package ru.practicum.admin_api.model;
-
-import ru.practicum.admin_api.dto.UserShortDto;
+package ru.practicum.admin_api.dto;
 
 import java.util.List;
 

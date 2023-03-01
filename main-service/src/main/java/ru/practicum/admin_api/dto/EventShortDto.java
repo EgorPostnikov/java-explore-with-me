@@ -1,7 +1,5 @@
-package ru.practicum.admin_api.model;
+package ru.practicum.admin_api.dto;
 
-
-import ru.practicum.admin_api.dto.UserShortDto;
 
 public class EventShortDto {
     private String annotation;

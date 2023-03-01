@@ -1,6 +1,6 @@
-package ru.practicum.admin_api.model;
+package ru.practicum.admin_api.dto;
 
-public class UpdateEventAdminRequest {
+public class UpdateEventUserRequest {
     private String annotation;
     private Integer category;
     private String description;

@@ -1,4 +1,4 @@
-package ru.practicum.admin_api.model;
+package ru.practicum.admin_api.dto;
 
 
 public class EventRequestStatusUpdateRequest {

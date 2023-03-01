@@ -1,6 +1,6 @@
-package ru.practicum.admin_api.model;
+package ru.practicum.admin_api.dto;
 
-public class NewEventDto {
+public class UpdateEventAdminRequest {
     private String annotation;
     private Integer category;
     private String description;
@@ -9,5 +9,6 @@ public class NewEventDto {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
+    private String stateAction;
     private String title;
 }
