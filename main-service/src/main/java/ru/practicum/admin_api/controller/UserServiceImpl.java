@@ -8,10 +8,9 @@ import org.springframework.stereotype.Service;
 import ru.practicum.admin_api.dto.UserDto;
 import ru.practicum.admin_api.mapper.UserMapper;
 import ru.practicum.admin_api.model.User;
-import ru.practicum.admin_api.storage.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -21,8 +20,13 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public Collection<UserDto> getAllUsers(List<Integer> ids,PageRequest pageRequest) {
-        Collection<User> users = userRepository.getUsersByIdIsIn(ids,pageRequest);
+    public Collection<UserDto> getAllUsers(Collection<Integer> ids,PageRequest pageRequest) {
+        Collection<User> users;
+        if(ids==null){
+            users=userRepository.getAllBy(pageRequest);
+        }else {
+            users = userRepository.getUsersByIdIn(ids, pageRequest);
+        }
         log.info("Users list found, users quantity is #{}", users.size());
         return UserMapper.INSTANCE.toUserDtos(users);
     }
@@ -37,11 +41,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(long userId) {
-        if (!userRepository.existsById(userId)){
+    public void deleteUser(Integer userId) {
+        Long id= 3L;
+        if (!userRepository.existsById(id)){
             throw new NoSuchElementException("User with id=" + userId + " was not found!");
         }
-        userRepository.deleteById(userId);
+        userRepository.deleteById(id);
         log.info("User with id #{} deleted", userId);
 
     }

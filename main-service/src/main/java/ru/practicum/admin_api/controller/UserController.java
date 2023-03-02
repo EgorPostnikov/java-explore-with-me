@@ -14,6 +14,7 @@ import ru.practicum.Response;
 import ru.practicum.admin_api.dto.UserDto;
 
 import javax.validation.ValidationException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,11 +29,11 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<UserDto> getAllUsers(@RequestParam(defaultValue= ("1")) List<Integer> ids,
+    public Collection<UserDto> getAllUsers(@RequestParam(required = false) Collection<Integer> ids,
                                            @RequestParam(defaultValue = "0") Integer from,
                                            @RequestParam(defaultValue = "10") Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
-        log.info("Get all users");
+        log.info("Get all users from {},size {}, with ids{}", from, size,ids);
         return service.getAllUsers(ids, pageRequest);
     }
 
@@ -45,12 +46,12 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteUser(@PathVariable long userId) {
+    void deleteUser(@PathVariable Integer userId) {
         log.info("Delete User, userId={}", userId);
         service.deleteUser(userId);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchElementException.class)
     public Response handleException(NoSuchElementException exception) {
         return new Response(exception.getMessage());

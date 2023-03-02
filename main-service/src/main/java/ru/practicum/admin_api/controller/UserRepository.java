@@ -1,4 +1,4 @@
-package ru.practicum.admin_api.storage;
+package ru.practicum.admin_api.controller;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Collection<User> getUsersByIdIsIn(List<Integer> ids,PageRequest pageRequest);
+    Collection<User> getUsersByIdIn(Collection<Integer> ids,PageRequest pageRequest);
+    Collection<User> getAllBy(PageRequest pageRequest);
+
 }
