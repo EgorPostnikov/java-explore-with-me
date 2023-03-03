@@ -1,10 +1,8 @@
-package ru.practicum.admin_api.controller;
+package ru.practicum.user;
 
 import org.springframework.data.domain.PageRequest;
-import ru.practicum.admin_api.dto.UserDto;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface UserService {
 

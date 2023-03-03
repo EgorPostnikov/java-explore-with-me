@@ -1,4 +1,4 @@
-package ru.practicum.admin_api.dto;
+package ru.practicum.dto;
 
 import java.util.List;
 

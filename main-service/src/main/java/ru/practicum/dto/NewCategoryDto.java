@@ -1,4 +1,4 @@
-package ru.practicum.admin_api.dto;
+package ru.practicum.dto;
 
 
 public class NewCategoryDto {

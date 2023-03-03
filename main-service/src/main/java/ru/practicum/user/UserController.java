@@ -1,4 +1,4 @@
-package ru.practicum.admin_api.controller;
+package ru.practicum.user;
 
 
 import lombok.RequiredArgsConstructor;
@@ -11,12 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 
 import ru.practicum.Response;
-import ru.practicum.admin_api.dto.UserDto;
 
 import javax.validation.ValidationException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController

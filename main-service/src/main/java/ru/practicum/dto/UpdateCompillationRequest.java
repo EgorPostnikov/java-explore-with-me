@@ -1,8 +1,8 @@
-package ru.practicum.admin_api.dto;
+package ru.practicum.dto;
 
 import java.util.List;
 
-public class NewCompilationDto {
+public class UpdateCompillationRequest {
     private List<Integer> events;
     private Boolean pinned;
     private String title;

@@ -1,4 +1,4 @@
-package ru.practicum.admin_api.model;
+package ru.practicum.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

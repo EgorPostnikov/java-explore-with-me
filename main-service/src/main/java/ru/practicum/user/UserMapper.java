@@ -1,9 +1,7 @@
-package ru.practicum.admin_api.mapper;
+package ru.practicum.user;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import ru.practicum.admin_api.dto.UserDto;
-import ru.practicum.admin_api.model.User;
 
 
 import java.util.Collection;
@@ -17,4 +15,5 @@ public interface UserMapper {
     User toUser(UserDto userDto);
 
     Collection<UserDto> toUserDtos(Collection<User> users);
+
 }

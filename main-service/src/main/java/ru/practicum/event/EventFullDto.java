@@ -1,4 +1,8 @@
-package ru.practicum.admin_api.dto;
+package ru.practicum.event;
+
+import ru.practicum.dto.CategoryDto;
+import ru.practicum.dto.Location;
+import ru.practicum.user.UserShortDto;
 
 import java.util.List;
 

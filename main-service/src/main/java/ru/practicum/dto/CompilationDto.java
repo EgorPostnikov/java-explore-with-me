@@ -1,4 +1,6 @@
-package ru.practicum.admin_api.dto;
+package ru.practicum.dto;
+
+import ru.practicum.event.EventShortDto;
 
 import java.util.List;
 
