@@ -7,6 +7,7 @@ import lombok.Setter;
 import ru.practicum.dto.Location;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -21,7 +22,7 @@ public class Event {
     private String annotation;
     private Integer category;
     private String description;
-    private String eventDate;
+    private LocalDateTime eventDate;
     @Transient
     private Location location;
     private Boolean paid;

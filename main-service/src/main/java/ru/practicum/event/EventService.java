@@ -11,5 +11,7 @@ public interface EventService {
 
     EventFullDto getFullEventInfo(Integer userId, Integer eventId);
 
-    EventFullDto updateEventOfUser(Integer userId, Integer eventId, EventShortDto requestDto);
+    EventFullDto updateEventOfUser(Integer userId, Integer eventId, NewEventDto requestDto);
+
+    Collection<EventShortDto> getRequestsForEventsOfUser(Integer userId, Integer eventId);
 }

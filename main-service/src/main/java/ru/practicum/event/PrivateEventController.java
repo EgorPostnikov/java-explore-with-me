@@ -60,22 +60,23 @@ public class PrivateEventController {
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEventOfUser(@PathVariable() Integer userId,
                                      @PathVariable() Integer eventId,
-                                     @RequestBody EventShortDto requestDto) {
+                                     @RequestBody NewEventDto requestDto) {
+        if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
+                    " чем через два часа от текущего момента");
+        }
         log.info("Updating event {} by user {}, by data {}", eventId, userId, requestDto);
         return service.updateEventOfUser(userId,eventId,requestDto);
         //изменить можно только отмененные события или события в состоянии ожидания модерации (Ожидается код ошибки 409)
         //дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента (Ожидается код ошибки 409)
     }
 
-
-
-
     @GetMapping("/w{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public Collection<EventShortDto> getRequestsForEventsOfUser(@PathVariable() Integer userId,
                                                                 @PathVariable() Integer eventId) {
         log.info("Get event {}, for user {}", eventId, userId);
-        return null;//В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
+        return service.getRequestsForEventsOfUser(userId,eventId);//В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
     }
 
     @PatchMapping("/{userId}/events/{eventId}requests")
