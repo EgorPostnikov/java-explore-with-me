@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.dto.Location;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +22,8 @@ public class Event {
     private Integer category;
     private String description;
     private LocalDateTime eventDate;
-    @Transient
+    @OneToOne
+    @JoinColumn(name = "locationId")
     private Location location;
     private Boolean paid;
     private Integer participantLimit;

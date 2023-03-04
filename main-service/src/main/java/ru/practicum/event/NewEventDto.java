@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.dto.Location;
 
 import java.time.LocalDateTime;
 @Setter

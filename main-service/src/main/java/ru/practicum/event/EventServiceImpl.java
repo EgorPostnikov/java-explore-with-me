@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.dto.CategoryDto;
+import ru.practicum.categories.CategoryDto;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
@@ -17,12 +17,12 @@ public class EventServiceImpl implements EventService{
 
     EventRepository repository;
     @Override
-    public NewEventDto createEvent(Integer userId, NewEventDto requestDto) {
+    public EventFullDto createEvent(Integer userId, NewEventDto requestDto) {
         Event entity = EventMapper.INSTANCE.toEvent(requestDto);
         entity.setCreatorId(userId);
         Event createdEntity = repository.save(entity);
         log.info("Event with id #{} saved", createdEntity.getId());
-        return EventMapper.INSTANCE.toNewEventDto(createdEntity);
+        return EventMapper.INSTANCE.toEventFullDto(createdEntity);
     }
     @Override
     public Collection<EventShortDto> getEventsForUser(PageRequest pageRequest, Integer userId) {

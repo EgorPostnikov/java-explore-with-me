@@ -1,12 +1,12 @@
 package ru.practicum.event;
 
 import org.springframework.data.domain.PageRequest;
-import ru.practicum.dto.CategoryDto;
+import ru.practicum.categories.CategoryDto;
 
 import java.util.Collection;
 
 public interface EventService {
-    NewEventDto createEvent(Integer userId, NewEventDto requestDto);
+    EventFullDto createEvent(Integer userId, NewEventDto requestDto);
 
     Collection<EventShortDto> getEventsForUser(PageRequest pageRequest, Integer userId);
 

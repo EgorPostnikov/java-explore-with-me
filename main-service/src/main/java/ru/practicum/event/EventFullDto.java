@@ -1,11 +1,17 @@
 package ru.practicum.event;
 
-import ru.practicum.dto.CategoryDto;
-import ru.practicum.dto.Location;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import ru.practicum.categories.CategoryDto;
 import ru.practicum.user.UserShortDto;
 
 import java.util.List;
-
+@Setter
+@Getter
+@AllArgsConstructor
+@ToString
 public class EventFullDto {
 
     private String annotation;

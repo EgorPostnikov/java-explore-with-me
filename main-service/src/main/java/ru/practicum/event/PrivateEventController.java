@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.Response;
-import ru.practicum.dto.CategoryDto;
+import ru.practicum.categories.CategoryDto;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
@@ -37,8 +37,8 @@ public class PrivateEventController {
 
     @PostMapping("/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
-    public NewEventDto createEvent(@PathVariable() Integer userId,
-                                   @RequestBody NewEventDto requestDto) {
+    public EventFullDto createEvent(@PathVariable() Integer userId,
+                                   @RequestBody (required = false) NewEventDto requestDto) {
         log.info("Creating event {} by user {}", requestDto, userId);
         if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
@@ -47,6 +47,10 @@ public class PrivateEventController {
         return service.createEvent(userId, requestDto);
         //Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента
     }
+
+
+
+
 
     @GetMapping("/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
