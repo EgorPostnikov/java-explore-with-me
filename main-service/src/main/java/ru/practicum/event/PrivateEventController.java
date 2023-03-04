@@ -85,7 +85,7 @@ public class PrivateEventController {
                                            @PathVariable() Integer eventId,
                                            @RequestBody CategoryDto requestDto) {
         log.info("Updating event {} by user {}, by data {}", eventId, userId, requestDto);
-        return null;
+        return service.changeEventsRequest(userId,eventId,  requestDto);
         //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
         //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
         //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)

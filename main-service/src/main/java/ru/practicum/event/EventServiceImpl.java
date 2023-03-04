@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.dto.CategoryDto;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
@@ -64,5 +65,9 @@ public class EventServiceImpl implements EventService{
     @Override
     public Collection<EventShortDto> getRequestsForEventsOfUser(Integer userId, Integer eventId) {
     return null;
+    }
+    @Override
+    public CategoryDto changeEventsRequest(Integer userId, Integer eventId, CategoryDto requestDto) {
+        return null;
     }
 }
