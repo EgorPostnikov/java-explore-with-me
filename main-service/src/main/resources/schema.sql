@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS categories
 
 ALTER TABLE events ADD FOREIGN KEY (locationId) REFERENCES locations (id);
 ALTER TABLE events ADD FOREIGN KEY (creatorId) REFERENCES users (id);
-ALTER TABLE events ADD FOREIGN KEY (category) REFERENCES users (id);
+ALTER TABLE events ADD FOREIGN KEY (category) REFERENCES categories (id);
 
 DELETE FROM categories;
 DELETE FROM locations;

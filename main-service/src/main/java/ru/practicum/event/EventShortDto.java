@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString
 public class EventShortDto {
     private String annotation;
-    private CategoryDto category;
+    //private CategoryDto category;
     private Integer confirmedRequests;
     private LocalDateTime eventDate;
     private Integer id;

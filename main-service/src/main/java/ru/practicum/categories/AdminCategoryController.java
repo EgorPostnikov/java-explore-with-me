@@ -26,10 +26,11 @@ import java.util.NoSuchElementException;
 public class AdminCategoryController {
     private final CategoryService service;
 
-    @PostMapping()
+   @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto createCategory(@RequestBody NewCategoryDto requestDto) {
         log.info("Creating category {}", requestDto);
+        System.out.println("запись события");
         return service.createCategory(requestDto);
     }
 
@@ -46,8 +47,6 @@ public class AdminCategoryController {
         log.info("Updating category {}", requestDto);
         return service.updateCategory(catId,requestDto);
     }
-
-
 
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

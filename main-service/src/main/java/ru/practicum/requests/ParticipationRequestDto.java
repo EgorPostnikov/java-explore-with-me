@@ -1,4 +1,4 @@
-package ru.practicum.dto;
+package ru.practicum.requests;
 
 public class ParticipationRequestDto {
     private String created;

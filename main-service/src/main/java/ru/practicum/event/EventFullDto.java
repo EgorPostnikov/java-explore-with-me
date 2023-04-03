@@ -15,7 +15,7 @@ import java.util.List;
 public class EventFullDto {
 
     private String annotation;
-    private CategoryDto category;
+    //private CategoryDto category;
     private Integer confirmedRequests;
     private String createdOn;
     private String description;
