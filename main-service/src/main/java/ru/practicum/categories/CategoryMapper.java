@@ -1,6 +1,7 @@
 package ru.practicum.categories;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventFullDto;

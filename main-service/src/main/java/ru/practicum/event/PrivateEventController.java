@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.Response;
-import ru.practicum.categories.CategoryDto;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
@@ -51,43 +50,41 @@ public class PrivateEventController {
 
 
 
-
     @GetMapping("/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getFullEventInfo(@PathVariable() Integer userId,
                                          @PathVariable() Integer eventId) {
         log.info("Get event {}, for user {}", eventId, userId);
         return service.getFullEventInfo(userId, eventId);//В случае, если события с заданным id не найдено, возвращает статус код 404
-    }
+    }/*
 
     @PatchMapping("/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto updateEventOfUser(@PathVariable() Integer userId, @PathVariable() Integer eventId) {
+    public EventFullDto updateEventOfUser(@PathVariable() Integer userId, @PathVariable(required = false) Integer eventId) {
         /*if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
                     " чем через два часа от текущего момента");
         }
-        log.info("Updating event {} by user {}, by data {}", eventId, userId, requestDto);*/
+        log.info("Updating event {} by user {}, by data {}", eventId, userId, requestDto);
         return null;//service.updateEventOfUser(userId,eventId);
         //изменить можно только отмененные события или события в состоянии ожидания модерации (Ожидается код ошибки 409)
         //дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента (Ожидается код ошибки 409)
     }
 
-    @GetMapping("/w{userId}/events/{eventId}/requests")
+    @GetMapping("/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public Collection<EventShortDto> getRequestsForEventsOfUser(@PathVariable() Integer userId,
                                                                 @PathVariable() Integer eventId) {
         log.info("Get event {}, for user {}", eventId, userId);
         return service.getRequestsForEventsOfUser(userId,eventId);//В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
     }
-
-    @PatchMapping("/{userId}/events/{eventId}requests")
+*/
+    @PatchMapping("/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto changeEventsRequest(@PathVariable() Integer userId,
-                                           @PathVariable() Integer eventId,
-                                           @RequestBody CategoryDto requestDto) {
-        log.info("Updating event {} by user {}, by data {}", eventId, userId, requestDto);
-        return service.changeEventsRequest(userId,eventId,  requestDto);
+    public EventRequestStatusUpdateRequest changeEventsRequest(@PathVariable(required = false) Integer userId,
+                                                               @PathVariable(required = false) Integer eventId) {
+        log.info("Updating event {} by user {}, by data {}", eventId, userId);
+        return null;//service.changeEventsRequest(userId,eventId,  requestDto);
         //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
         //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
         //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)

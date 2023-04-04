@@ -29,7 +29,8 @@ public class AdminCategoryController {
    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto createCategory(@RequestBody NewCategoryDto requestDto) {
-        log.info("Creating category {}", requestDto);
+       //NewCategoryDto requestDto = new NewCategoryDto("концерты");
+       log.info("Creating category {}", requestDto);
         System.out.println("запись события");
         return service.createCategory(requestDto);
     }
@@ -40,14 +41,13 @@ public class AdminCategoryController {
         service.deleteCategory(catId);
     }
 
-    @GetMapping("/{catId}")
+    @PatchMapping("/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@RequestBody NewCategoryDto requestDto,
                                       @PathVariable Integer catId) {
         log.info("Updating category {}", requestDto);
         return service.updateCategory(catId,requestDto);
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchElementException.class)

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.Response;
 
 import javax.validation.ValidationException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 
 
@@ -23,14 +25,15 @@ public class PublicCategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto getCategory(@PathVariable Integer catId) {
         log.info("Get category #{}", catId);
-        return null;//service.getCategory(catId);
+        return service.getCategory(catId);
     }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto getCategories() {
+    public Collection<CategoryDto> getCategories(@RequestParam(defaultValue = "0") Integer from,
+                                                 @RequestParam(defaultValue = "10") Integer size) {
         log.info("Get categories");
-        return null;//service.getCategories();
+        return Collections.emptyList();//service.getCategories();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

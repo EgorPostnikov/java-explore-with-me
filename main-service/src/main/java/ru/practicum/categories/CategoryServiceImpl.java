@@ -37,4 +37,11 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Category with id #{} updated", catId);
         return CategoryMapper.INSTANCE.toCategoryDto(updatedEntity);
     }
+
+    @Override
+    public CategoryDto getCategory(Integer catId) {
+        Category category = repository.getById(catId);
+        log.info("Category with id #{} got", catId);
+        return CategoryMapper.INSTANCE.toCategoryDto(category);
+    }
 }

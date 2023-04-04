@@ -6,4 +6,6 @@ public interface CategoryService {
     void deleteCategory(Integer catId);
 
     CategoryDto updateCategory(Integer catId,NewCategoryDto requestDto);
+
+    CategoryDto getCategory(Integer catId);
 }

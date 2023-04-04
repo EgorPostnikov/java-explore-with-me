@@ -10,6 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class NewCategoryDto {
+    private Integer id;
     private String name;
 
 }
