@@ -15,4 +15,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Collection<Event> getEventsByCreatorIdIs(Integer userId, PageRequest pageRequest);
 
     Event getEventsByCreatorIdIsAndIdIs(Integer userId, Integer eventId);
+
+    Boolean existsEventsByCategoryIs(Integer categoryIid);
 }

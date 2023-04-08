@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.Response;
+import ru.practicum.apiError.Response;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
@@ -24,15 +24,7 @@ import java.util.NoSuchElementException;
 public class PrivateEventController {
     private final EventServiceImpl service;
 
-    @GetMapping("/{userId}/events")
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<EventShortDto> getEventsForUser(@PathVariable() Integer userId,
-                                                      @RequestParam(defaultValue = "0") Integer from,
-                                                      @RequestParam(defaultValue = "10") Integer size) {
-        PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
-        log.info("Get all events from {},size {}, for user {}", from, size, userId);
-        return service.getEventsForUser(pageRequest, userId);//В случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список
-    }
+
 
     @PostMapping("/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
@@ -46,6 +38,9 @@ public class PrivateEventController {
         return service.createEvent(userId, requestDto);
         //Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента
     }
+
+
+
 
 
 
@@ -89,6 +84,15 @@ public class PrivateEventController {
         //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
         //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
         //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
+    }
+    @GetMapping("/{userId}/events")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<EventShortDto> getEventsForUser(@PathVariable() Integer userId,
+                                                      @RequestParam(defaultValue = "0") Integer from,
+                                                      @RequestParam(defaultValue = "10") Integer size) {
+        PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
+        log.info("Get all events from {},size {}, for user {}", from, size, userId);
+        return service.getEventsForUser(pageRequest, userId);//В случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список
     }
 
 

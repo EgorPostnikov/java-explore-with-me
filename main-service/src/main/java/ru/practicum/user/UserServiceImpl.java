@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public UserDto createUser(NewUserRequest userDto) {
         User user = UserMapper.INSTANCE.toUser(userDto);
         User createdUser;
         createdUser = userRepository.save(user);
@@ -38,11 +38,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Integer userId) {
-        Long id= 3L;
-        if (!userRepository.existsById(id)){
+        if (!userRepository.existsById(userId)){
             throw new NoSuchElementException("User with id=" + userId + " was not found!");
         }
-        userRepository.deleteById(id);
+        userRepository.deleteById(userId);
         log.info("User with id #{} deleted", userId);
 
     }

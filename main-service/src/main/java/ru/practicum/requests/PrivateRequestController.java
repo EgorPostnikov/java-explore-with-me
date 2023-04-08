@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.Response;
-import ru.practicum.categories.CategoryDto;
-import ru.practicum.categories.CategoryService;
-import ru.practicum.categories.NewCategoryDto;
+import ru.practicum.apiError.Response;
 
 import javax.validation.ValidationException;
 import java.util.Collection;
@@ -50,7 +47,8 @@ public class PrivateRequestController {
     public ParticipationRequestDto updateRequest(@PathVariable Integer userId,
                                                  @PathVariable Integer requestId) {
         log.info("Cancelling Request # {} from user {}",requestId, userId);
-        return new ParticipationRequestDto() ;
+        throw new NoSuchElementException();
+        //return new ParticipationRequestDto() ;
     }
 
 

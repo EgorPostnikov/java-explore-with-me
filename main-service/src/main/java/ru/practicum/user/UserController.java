@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.validation.annotation.Validated;
 
-import ru.practicum.Response;
+import ru.practicum.apiError.Response;
 
 import javax.validation.ValidationException;
 import java.util.Collection;
@@ -23,6 +23,12 @@ import java.util.NoSuchElementException;
 @Validated
 public class UserController {
     private final UserService service;
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto createUser(@RequestBody NewUserRequest requestDto) {
+        log.info("Creating user {}", requestDto);
+        return service.createUser(requestDto);
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -34,12 +40,7 @@ public class UserController {
         return service.getAllUsers(ids, pageRequest);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@RequestBody UserDto requestDto) {
-        log.info("Creating user {}", requestDto);
-        return service.createUser(requestDto);
-    }
+
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,11 +1,16 @@
-package ru.practicum;
+package ru.practicum.apiError;
 
 public class Response {
     private String message;
+    private String status;
 
     public Response() {
     }
 
+    public Response(String message,String status) {
+        this.message = message;
+        this.status = status;
+    }
     public Response(String message) {
         this.message = message;
     }

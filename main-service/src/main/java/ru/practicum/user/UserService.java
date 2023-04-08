@@ -8,7 +8,7 @@ public interface UserService {
 
     Collection<UserDto> getAllUsers(Collection<Integer> ids, PageRequest pageRequest);
 
-    UserDto createUser(UserDto requestDto);
+    UserDto createUser(NewUserRequest requestDto);
 
    void deleteUser(Integer userId);
 }
