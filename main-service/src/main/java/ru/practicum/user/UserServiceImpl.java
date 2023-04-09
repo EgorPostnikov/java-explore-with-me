@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.categories.Category;
 
+import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(NewUserRequest userDto) {
         User user = UserMapper.INSTANCE.toUser(userDto);
+        userValidation(user);
         User createdUser;
         createdUser = userRepository.save(user);
         log.info("User with id #{} saved", createdUser.getId());
@@ -45,5 +48,20 @@ public class UserServiceImpl implements UserService {
         log.info("User with id #{} deleted", userId);
 
     }
+
+
+    public Boolean userValidation(User user) {
+        String name = user.getName();
+        if (name==null) {
+            throw new ValidationException("Field: name. Error: must not be null. Value: null");
+        } else if (name.isBlank()) {
+            throw new ValidationException("Field: name. Error: must not be blank. Value: null");
+        } else if (userRepository.existsUserByName(user.getName())) {
+            throw new SecurityException("User with name=" + user.getName() + " already exist");
+        }
+        return true;
+    }
+
+
 }
 

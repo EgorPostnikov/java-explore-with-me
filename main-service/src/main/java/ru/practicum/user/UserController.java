@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.validation.annotation.Validated;
 
+import ru.practicum.apiError.ApiError;
 import ru.practicum.apiError.Response;
 
 import javax.validation.ValidationException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -50,14 +52,24 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NoSuchElementException.class)
-    public Response handleException(NoSuchElementException exception) {
-        return new Response(exception.getMessage());
+    @ExceptionHandler(ValidationException.class)
+    public ApiError handleException(ValidationException exception) {
+        return new ApiError(exception.getMessage(),
+                //exception.getCause().toString(),
+                HttpStatus.BAD_REQUEST.toString(),
+                LocalDateTime.now().toString()
+        );
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(ValidationException.class)
-    public Response handleException(ValidationException exception) {
+    @ExceptionHandler(SecurityException.class)
+    public Response handleException(RuntimeException exception) {
+        return new Response(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoSuchElementException.class)
+    public Response handleException(NoSuchElementException exception) {
         return new Response(exception.getMessage());
     }
 }
