@@ -31,15 +31,13 @@ public class PrivateEventController {
     public EventFullDto createEvent(@PathVariable() Integer userId,
                                    @RequestBody (required = false) NewEventDto requestDto) {
         log.info("Creating event {} by user {}", requestDto, userId);
-        if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+        /*if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
                     " чем через два часа от текущего момента");
-        }
+        }*/
         return service.createEvent(userId, requestDto);
         //Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента
     }
-
-
 
 
 

@@ -49,17 +49,17 @@ public class EventServiceImpl implements EventService{
         if (oldEvent==null){
             throw new EntityNotFoundException("Event for user id #"+userId+" and events id #"+eventId+" did not found");
         }
-        oldEvent.setAnnotation(newEvent.getAnnotation());
-        oldEvent.setCategory(newEvent.getCategory());
-        oldEvent.setDescription(newEvent.getDescription());
-        oldEvent.setEventDate(newEvent.getEventDate());
-        oldEvent.setLocation(newEvent.getLocation());
-        oldEvent.setPaid(newEvent.getPaid());
-        oldEvent.setParticipantLimit(newEvent.getParticipantLimit());
-        oldEvent.setRequestModeration(newEvent.getRequestModeration());
-        oldEvent.setTitle(newEvent.getTitle());
-        Event createdEntity = repository.save(oldEvent);
-        log.info("Event with id #{} updated", createdEntity.getId());
+        //oldEvent.setAnnotation(newEvent.getAnnotation());
+        //oldEvent.setCategory(newEvent.getCategory());
+        //oldEvent.setDescription(newEvent.getDescription());
+        //oldEvent.setEventDate(newEvent.getEventDate());
+        //.setLocation(newEvent.getLocation());
+        //oldEvent.setPaid(newEvent.getPaid());
+       // oldEvent.setParticipantLimit(newEvent.getParticipantLimit());
+        //oldEvent.setRequestModeration(newEvent.getRequestModeration());
+        //oldEvent.setTitle(newEvent.getTitle());
+        //Event createdEntity = repository.save(oldEvent);
+        //log.info("Event with id #{} updated", createdEntity.getId());
         return EventMapper.INSTANCE.toEventFullDto(repository.getEventsByCreatorIdIsAndIdIs(userId,eventId));
     }
     @Override

@@ -11,21 +11,14 @@ public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
+    //@Mapping(source = "category", target = "category.id")
     Event toEvent(NewEventDto entity);
-    //@Mapping(source = "category.id", target = "category")
+
     EventFullDto toEventFullDto(Event entity);
-
-
+    EventShortDto toEventShortDto(Event entity);
+    Collection<EventShortDto> toEventShortDtos (Collection<Event> entities);
 
     //NewEventDto toNewEventDto(Event entity);
-
-
-
-    EventShortDto toEventShortDto(Event entity);
-
-
     //Collection<NewEventDto> toNewEventDtos (Collection<Event> entities);
-
-    Collection<EventShortDto> toEventShortDtos (Collection<Event> entities);
     //Collection<EventFullDto> toEventFullDtos (Collection<Event> entities);
 }

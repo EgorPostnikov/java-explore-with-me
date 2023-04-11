@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.categories.CategoryDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,15 +20,23 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String annotation;
+    /*@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")*/
     private Integer category;
     private String description;
-    private LocalDateTime eventDate;
-    @OneToOne
-    @JoinColumn(name = "locationId")
-    private Location location;
+    @Column(name = "event_date")
+    private String eventDate;
+    /*@OneToOne
+    @JoinColumn(name = "location_id")
+    private Location location;*/
     private Boolean paid;
+    @Column(name = "participant_limit")
     private Integer participantLimit;
+    @Column(name = "request_moderation")
     private Boolean requestModeration;
     private String title;
+    //@OneToOne
+    //@JoinColumn(name = "id")
+    @Column(name = "creator_id")
     private Integer creatorId;
 }

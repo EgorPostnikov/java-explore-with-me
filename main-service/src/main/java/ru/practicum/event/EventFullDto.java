@@ -16,6 +16,9 @@ import java.util.List;
 public class EventFullDto {
 
     private String annotation;
+
+
+
     //private CategoryDto category;
     //private Integer confirmedRequests;
     //private String createdOn;
@@ -23,7 +26,7 @@ public class EventFullDto {
     private String eventDate;
     private Integer id;
     //private UserShortDto initiator;
-    private Location location;
+    //private Location location;
     private Boolean paid;
     private Integer participantLimit;
     //private String publishedOn;

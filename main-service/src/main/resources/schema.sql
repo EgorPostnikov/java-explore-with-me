@@ -10,13 +10,13 @@ CREATE TABLE IF NOT EXISTS events
     annotation  VARCHAR(2000) NOT NULL,
     category int,
     description VARCHAR(7000) NOT NULL,
-    eventDate timestamp,
-    locationId int,
+    event_date VARCHAR(255),
+    location_id int,
     paid BOOL,
-    participantLimit int,
-    requestModeration BOOL,
+    participant_limit int,
+    request_moderation BOOL,
     title VARCHAR(120),
-    creatorId int,
+    creator_id int,
     CONSTRAINT pk_event PRIMARY KEY(id));
 
 CREATE TABLE IF NOT EXISTS locations
@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS categories
     name VARCHAR(120) unique,
     CONSTRAINT pk_categories PRIMARY KEY(id));
 
-ALTER TABLE events ADD FOREIGN KEY (locationId) REFERENCES locations (id);
-ALTER TABLE events ADD FOREIGN KEY (creatorId) REFERENCES users (id);
+ALTER TABLE events ADD FOREIGN KEY (location_id) REFERENCES locations (id);
+ALTER TABLE events ADD FOREIGN KEY (creator_id) REFERENCES users (id);
 ALTER TABLE events ADD FOREIGN KEY (category) REFERENCES categories (id);
 
 DELETE FROM categories;
