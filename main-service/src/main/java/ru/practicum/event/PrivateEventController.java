@@ -11,7 +11,6 @@ import ru.practicum.apiError.Response;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -29,7 +28,7 @@ public class PrivateEventController {
     @PostMapping("/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEvent(@PathVariable() Integer userId,
-                                   @RequestBody (required = false) NewEventDto requestDto) {
+                                   @RequestBody (required = false) ANewEventDto requestDto) {
         log.info("Creating event {} by user {}", requestDto, userId);
         /*if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +

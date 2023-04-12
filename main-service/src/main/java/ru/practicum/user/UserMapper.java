@@ -13,6 +13,7 @@ public interface UserMapper {
     UserDto toUserDto(User user);
 
     User toUser(NewUserRequest userDto);
+    UserShortDto toUserShortDto (User user);
 
     Collection<UserDto> toUserDtos(Collection<User> users);
 

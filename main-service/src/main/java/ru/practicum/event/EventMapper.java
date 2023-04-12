@@ -3,6 +3,7 @@ package ru.practicum.event;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import ru.practicum.user.User;
 
 import java.util.Collection;
 
@@ -11,8 +12,13 @@ public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    //@Mapping(source = "category", target = "category.id")
-    Event toEvent(NewEventDto entity);
+    @Mapping(target = "initiator", expression = "java(user)" )
+    @Mapping(target = "category.id", source = "entity.category")
+    Event toEvent(ANewEventDto entity, User user);
+
+
+
+
 
     EventFullDto toEventFullDto(Event entity);
     EventShortDto toEventShortDto(Event entity);

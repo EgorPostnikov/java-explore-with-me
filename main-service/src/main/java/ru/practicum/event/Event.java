@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.categories.Category;
 import ru.practicum.categories.CategoryDto;
+import ru.practicum.user.User;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Setter
@@ -20,23 +23,36 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String annotation;
-    /*@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")*/
-    private Integer category;
     private String description;
     @Column(name = "event_date")
     private String eventDate;
-    /*@OneToOne
-    @JoinColumn(name = "location_id")
-    private Location location;*/
     private Boolean paid;
     @Column(name = "participant_limit")
     private Integer participantLimit;
     @Column(name = "request_moderation")
     private Boolean requestModeration;
     private String title;
-    //@OneToOne
-    //@JoinColumn(name = "id")
-    @Column(name = "creator_id")
-    private Integer creatorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "initiator_id")
+    private User initiator;
+    private Integer views;
+    @Column(name = "published_on")
+    private String publishedOn = LocalDateTime.now().toString();
+    @Column(name = "confirmed_requests")
+    private Integer confirmedRequests;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+
+    /*@OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id")
+    private Location location;*/
+
+
+    /*@OneToOne
+    @JoinColumn(name = "location_id")
+    */
+    //@ManyToOne(fetch = FetchType.LAZY)
+
 }

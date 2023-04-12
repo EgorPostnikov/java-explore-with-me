@@ -12,9 +12,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Collection<User> getAllBy(PageRequest pageRequest);
 
 
-    Collection<Event> getEventsByCreatorIdIs(Integer userId, PageRequest pageRequest);
+    Collection<Event> getEventsByInitiatorIdIs(Integer userId, PageRequest pageRequest);
 
-    Event getEventsByCreatorIdIsAndIdIs(Integer userId, Integer eventId);
+    Event getEventsByInitiatorIdIsAndIdIs(Integer userId, Integer eventId);
 
     Boolean existsEventsByCategoryIs(Integer categoryIid);
 }
