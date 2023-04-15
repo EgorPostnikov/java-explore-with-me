@@ -14,7 +14,7 @@ public interface EventMapper {
 
     @Mapping(target = "initiator", expression = "java(user)" )
     @Mapping(target = "category.id", source = "entity.category")
-    Event toEvent(ANewEventDto entity, User user);
+    Event toEvent(NewEventDto entity, User user);
 
 
 

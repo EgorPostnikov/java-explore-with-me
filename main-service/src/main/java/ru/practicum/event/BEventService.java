@@ -5,14 +5,14 @@ import ru.practicum.categories.CategoryDto;
 
 import java.util.Collection;
 
-public interface EventService {
-    EventFullDto createEvent(Integer userId, ANewEventDto requestDto);
+public interface BEventService {
+    EventFullDto createEvent(Integer userId, NewEventDto requestDto);
 
     Collection<EventShortDto> getEventsForUser(PageRequest pageRequest, Integer userId);
 
     EventFullDto getFullEventInfo(Integer userId, Integer eventId);
 
-    EventFullDto updateEventOfUser(Integer userId, Integer eventId, ANewEventDto requestDto);
+    EventFullDto updateEventOfUser(Integer userId, Integer eventId, UpdateEventUserRequest requestDto);
 
     Collection<EventShortDto> getRequestsForEventsOfUser(Integer userId, Integer eventId);
 

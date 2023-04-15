@@ -1,7 +1,14 @@
-package ru.practicum.dto;
+package ru.practicum.event;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.event.Location;
-
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateEventAdminRequest {
     private String annotation;
     private Integer category;

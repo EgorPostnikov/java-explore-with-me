@@ -8,6 +8,7 @@ import ru.practicum.categories.CategoryDto;
 import ru.practicum.user.UserShortDto;
 
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -25,16 +26,11 @@ public class EventFullDto {
     private String title;
     private UserShortDto initiator;
     private Integer views;
-    private String publishedOn;
+    private String createdOn;
     private Integer confirmedRequests;
     private CategoryDto category;
+    private Location location;
+    private String state;
+    private String publishedOn;
 
-
-    //private List<String> state;
-    //private Location location;
-    //
-    //
-
-    //
-    //
 }

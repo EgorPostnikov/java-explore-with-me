@@ -1,7 +1,17 @@
-package ru.practicum.dto;
+package ru.practicum.event;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.event.Location;
 
+import javax.persistence.Entity;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateEventUserRequest {
     private String annotation;
     private Integer category;

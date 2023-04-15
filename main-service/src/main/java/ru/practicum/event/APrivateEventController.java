@@ -20,15 +20,23 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class PrivateEventController {
-    private final EventServiceImpl service;
+public class APrivateEventController {
+    private final CEventServiceImpl service;
 
-
+    @GetMapping("/{userId}/events")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<EventShortDto> getEventsForUser(@PathVariable() Integer userId,
+                                                      @RequestParam(defaultValue = "0") Integer from,
+                                                      @RequestParam(defaultValue = "10") Integer size) {
+        PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
+        log.info("Get all events from {},size {}, for user {}", from, size, userId);
+        return service.getEventsForUser(pageRequest, userId);//В случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список
+    }
 
     @PostMapping("/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEvent(@PathVariable() Integer userId,
-                                   @RequestBody (required = false) ANewEventDto requestDto) {
+                                    @RequestBody(required = false) NewEventDto requestDto) {
         log.info("Creating event {} by user {}", requestDto, userId);
         /*if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
@@ -39,26 +47,25 @@ public class PrivateEventController {
     }
 
 
-
-
-
     @GetMapping("/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getFullEventInfo(@PathVariable() Integer userId,
                                          @PathVariable() Integer eventId) {
         log.info("Get event {}, for user {}", eventId, userId);
-        return service.getFullEventInfo(userId, eventId);//В случае, если события с заданным id не найдено, возвращает статус код 404
-    }/*
-
+        return service.getFullEventInfo(userId, eventId);
+        //В случае, если события с заданным id не найдено, возвращает статус код 404
+    }
     @PatchMapping("/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto updateEventOfUser(@PathVariable() Integer userId, @PathVariable(required = false) Integer eventId) {
+    public EventFullDto updateEventOfUser(@PathVariable() Integer userId,
+                                          @PathVariable(required = false) Integer eventId,
+                                          @RequestBody UpdateEventUserRequest requestDto) {
         /*if (requestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
                     " чем через два часа от текущего момента");
-        }
+        }*/
         log.info("Updating event {} by user {}, by data {}", eventId, userId, requestDto);
-        return null;//service.updateEventOfUser(userId,eventId);
+        return service.updateEventOfUser(userId, eventId, requestDto);
         //изменить можно только отмененные события или события в состоянии ожидания модерации (Ожидается код ошибки 409)
         //дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента (Ожидается код ошибки 409)
     }
@@ -68,9 +75,8 @@ public class PrivateEventController {
     public Collection<EventShortDto> getRequestsForEventsOfUser(@PathVariable() Integer userId,
                                                                 @PathVariable() Integer eventId) {
         log.info("Get event {}, for user {}", eventId, userId);
-        return service.getRequestsForEventsOfUser(userId,eventId);//В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
+        return service.getRequestsForEventsOfUser(userId, eventId);//В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
     }
-*/
     @PatchMapping("/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateRequest changeEventsRequest(@PathVariable(required = false) Integer userId,
@@ -82,16 +88,6 @@ public class PrivateEventController {
         //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
         //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
     }
-    @GetMapping("/{userId}/events")
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<EventShortDto> getEventsForUser(@PathVariable() Integer userId,
-                                                      @RequestParam(defaultValue = "0") Integer from,
-                                                      @RequestParam(defaultValue = "10") Integer size) {
-        PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
-        log.info("Get all events from {},size {}, for user {}", from, size, userId);
-        return service.getEventsForUser(pageRequest, userId);//В случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список
-    }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchElementException.class)

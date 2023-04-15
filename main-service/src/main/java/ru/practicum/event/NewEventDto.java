@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @ToString
-public class ANewEventDto {
+public class NewEventDto {
     private String annotation;
     private Integer category;
     private String description;

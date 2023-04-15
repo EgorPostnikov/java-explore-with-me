@@ -2,14 +2,16 @@ package ru.practicum.requests;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.apiError.Response;
 
 import javax.validation.ValidationException;
+import javax.websocket.server.PathParam;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
 
@@ -19,38 +21,46 @@ import java.util.NoSuchElementException;
 @Slf4j
 @Validated
 public class PrivateRequestController {
-    //private final CategoryService service;
 
-    /*@PostMapping("/{userId}/requests")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto createRequest(@PathVariable Integer userId) {
-        log.info("Creating Request from user {}", userId);
-        return null;
-    }*/
+    private final RequestServiceImpl service;
 
     @GetMapping("/{userId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ParticipationRequestDto> getRequest(@PathVariable Integer userId) {
+    //получение информации о заявках текущего пользователя на участие в чужих событиях
+    public Collection<ParticipationRequestDto> getRequest(@PathVariable Integer userId,
+                                                          @RequestParam(defaultValue = "0") Integer from,
+                                                          @RequestParam(defaultValue = "10") Integer size) {
+        PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
         log.info("Get Request from user {}", userId);
-        return Collections.emptyList();
+        return service.getUserRequests(userId,pageRequest);
+        //В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
     }
+
+    @PostMapping("/{userId}/requests")
+    @ResponseStatus(HttpStatus.CREATED)
+    //Добавление запроса от текущего пользователя на участие в событии
+    public ParticipationRequestDto createRequest(@PathVariable Integer userId,
+                                                 @RequestParam Integer eventId) {
+        log.info("Creating Request from user {}", userId);
+
+        return service.createRequest(userId,eventId);
+        //нельзя добавить повторный запрос (Ожидается код ошибки 409)
+        //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
+        //нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
+        //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
+        //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
+    }
+
+
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto cancelRequest(@PathVariable Integer userId,
+    @ResponseStatus(HttpStatus.OK)
+    //Отмена своего запроса на участие в событии
+    public ParticipationRequestDto cancellRequest(@PathVariable Integer userId,
                                                  @PathVariable Integer requestId) {
-        log.info("Cancelling Request # {} from user {}",requestId, userId);
-        return new ParticipationRequestDto() ;
-    }
+        log.info("Cancelling Request # {} from user {}", requestId, userId);
 
-    @PatchMapping("/{userId}/requests/{requestId}/requests")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto updateRequest(@PathVariable Integer userId,
-                                                 @PathVariable Integer requestId) {
-        log.info("Cancelling Request # {} from user {}",requestId, userId);
-        throw new NoSuchElementException();
-        //return new ParticipationRequestDto() ;
+        return service.cancellRequest(userId,requestId) ;
     }
-
 
 
 

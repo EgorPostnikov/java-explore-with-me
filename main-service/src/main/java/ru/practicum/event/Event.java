@@ -11,6 +11,10 @@ import ru.practicum.user.User;
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -21,6 +25,7 @@ import java.time.LocalDateTime;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
     private String annotation;
     private String description;
@@ -43,16 +48,15 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-
-
-    /*@OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
-    private Location location;*/
-
-
-    /*@OneToOne
-    @JoinColumn(name = "location_id")
-    */
-    //@ManyToOne(fetch = FetchType.LAZY)
-
+    private Location location;
+    @Column(name = "state_name")
+    private String state = "PENDING";
+    @Column(name = "created_on")
+    private String createdOn = LocalDateTime.now().toString();
+    /*@ElementCollection
+    @CollectionTable(name="states", joinColumns=@JoinColumn(name="event_id"))
+    @Column(name="name")
+    private Set<String> state = new HashSet<>();*/
 }
