@@ -6,11 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.categories.CategoryDto;
+import ru.practicum.requests.*;
 import ru.practicum.user.User;
 import ru.practicum.user.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +23,8 @@ public class CEventServiceImpl implements BEventService {
 
     EventRepository repository;
     UserRepository userRepository;
+    RequestRepository requestRepository;
+    private final RequestServiceImpl requestService;
 
     @Override
     public Collection<EventShortDto> getEventsForUser(PageRequest pageRequest, Integer userId) {
@@ -91,12 +97,35 @@ public class CEventServiceImpl implements BEventService {
     }
 
     @Override
-    public Collection<EventShortDto> getRequestsForEventsOfUser(Integer userId, Integer eventId) {
+    public Collection<ParticipationRequestDto> getRequestsForEventsOfUser(Integer userId, Integer eventId) {
+        Collection<ParticipationRequest> userRequestsForEvent= requestRepository.
+                getParticipationRequestsByEventIsAndAndRequesterIs(userId, eventId);
 
-    return null;
+        log.info("Requests of user id #{} for event id #{}  get, requests qty is {}", userId,eventId, userRequestsForEvent.size());
+        if (userRequestsForEvent.isEmpty()) {
+            userRequestsForEvent = Collections.emptyList();
+        }
+        return RequestMapper.INSTANCE.toParticipationRequestDtos(userRequestsForEvent);
     }
     @Override
-    public CategoryDto changeEventsRequest(Integer userId, Integer eventId, CategoryDto requestDto) {
-        return null;
+    public EventRequestStatusUpdateResult changeEventsRequestStatus(Integer userId,
+                                                                    Integer eventId,
+                                                                    EventRequestStatusUpdateRequest requestDto) {
+        List<Integer> requestIds =requestDto.getRequestIds();
+        String status = requestDto.getStatus();
+        EventFullDto event= getFullEventInfo(userId,eventId);
+        Integer participantLimit = event.getParticipantLimit();
+        HashSet<ParticipationRequest> requestsForEvent= requestRepository.getParticipationRequestsByEventIsOrderById(eventId);
+
+        for (Integer requestId:requestIds) {
+            //requestRepository
+
+        }
+        return new EventRequestStatusUpdateResult(Collections.emptyList(),Collections.emptyList());
+        //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
+        //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
+        //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
+        //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
+
     }
 }

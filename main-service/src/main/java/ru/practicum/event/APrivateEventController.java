@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.apiError.Response;
+import ru.practicum.requests.ParticipationRequestDto;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
@@ -72,17 +73,23 @@ public class APrivateEventController {
 
     @GetMapping("/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<EventShortDto> getRequestsForEventsOfUser(@PathVariable() Integer userId,
-                                                                @PathVariable() Integer eventId) {
+    //Получение информации о запросах на участие в событии текущего пользователя
+    public Collection<ParticipationRequestDto> getRequestsForEventsOfUser(@PathVariable() Integer userId,
+                                                                          @PathVariable() Integer eventId) {
         log.info("Get event {}, for user {}", eventId, userId);
-        return service.getRequestsForEventsOfUser(userId, eventId);//В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
+        return service.getRequestsForEventsOfUser(userId, eventId);
+        //В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
     }
+
+
     @PatchMapping("/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public EventRequestStatusUpdateRequest changeEventsRequest(@PathVariable(required = false) Integer userId,
-                                                               @PathVariable(required = false) Integer eventId) {
-        log.info("Updating event {} by user {}, by data {}", eventId, userId);
-        return null;//service.changeEventsRequest(userId,eventId,  requestDto);
+    //Изменение статуса (подтверждена, отменена)заявок на участие в событии
+    public EventRequestStatusUpdateResult changeEventsRequestStatus(@PathVariable(required = false) Integer userId,
+                                                               @PathVariable(required = false) Integer eventId,
+                                                               @RequestBody EventRequestStatusUpdateRequest updateRequest ) {
+        log.info("Change request of event {}  by user {}, to status {}", eventId, userId,updateRequest.getStatus());
+        return service.changeEventsRequestStatus(userId,eventId, updateRequest);
         //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
         //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
         //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)

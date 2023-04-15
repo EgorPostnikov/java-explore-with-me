@@ -2,6 +2,7 @@ package ru.practicum.event;
 
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.categories.CategoryDto;
+import ru.practicum.requests.ParticipationRequestDto;
 
 import java.util.Collection;
 
@@ -14,7 +15,7 @@ public interface BEventService {
 
     EventFullDto updateEventOfUser(Integer userId, Integer eventId, UpdateEventUserRequest requestDto);
 
-    Collection<EventShortDto> getRequestsForEventsOfUser(Integer userId, Integer eventId);
+    Collection<ParticipationRequestDto> getRequestsForEventsOfUser(Integer userId, Integer eventId);
 
-    CategoryDto changeEventsRequest(Integer userId, Integer eventId, CategoryDto requestDto);
+    EventRequestStatusUpdateResult changeEventsRequestStatus(Integer userId, Integer eventId, EventRequestStatusUpdateRequest requestDto);
 }

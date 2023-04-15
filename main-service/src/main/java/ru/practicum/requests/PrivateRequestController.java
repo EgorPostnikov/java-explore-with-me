@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.apiError.Response;
 
 import javax.validation.ValidationException;
-import javax.websocket.server.PathParam;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -32,7 +32,7 @@ public class PrivateRequestController {
                                                           @RequestParam(defaultValue = "10") Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
         log.info("Get Request from user {}", userId);
-        return service.getUserRequests(userId,pageRequest);
+        return service.getUserRequests(userId, pageRequest);
         //В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
     }
 
@@ -42,8 +42,13 @@ public class PrivateRequestController {
     public ParticipationRequestDto createRequest(@PathVariable Integer userId,
                                                  @RequestParam Integer eventId) {
         log.info("Creating Request from user {}", userId);
-
-        return service.createRequest(userId,eventId);
+        ParticipationRequestDto request = new ParticipationRequestDto(
+                LocalDateTime.now().toString(),
+                eventId,
+                null,
+                userId,
+                "PENDING");
+        return service.createRequest(request);
         //нельзя добавить повторный запрос (Ожидается код ошибки 409)
         //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
         //нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
@@ -56,23 +61,28 @@ public class PrivateRequestController {
     @ResponseStatus(HttpStatus.OK)
     //Отмена своего запроса на участие в событии
     public ParticipationRequestDto cancellRequest(@PathVariable Integer userId,
-                                                 @PathVariable Integer requestId) {
+                                                  @PathVariable Integer requestId) {
         log.info("Cancelling Request # {} from user {}", requestId, userId);
 
-        return service.cancellRequest(userId,requestId) ;
+        return service.cancellRequest(userId, requestId);
     }
 
 
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NoSuchElementException.class)
-    public Response handleException(NoSuchElementException exception) {
+    @ExceptionHandler(ValidationException.class)
+    public Response handleException(ValidationException exception) {
         return new Response(exception.getMessage());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(ValidationException.class)
-    public Response handleException(ValidationException exception) {
+    @ExceptionHandler(SecurityException.class)
+    public Response handleException(RuntimeException exception) {
+        return new Response(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoSuchElementException.class)
+    public Response handleException(NoSuchElementException exception) {
         return new Response(exception.getMessage());
     }
 
