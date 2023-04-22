@@ -30,7 +30,7 @@ public class Event {
     private String annotation;
     private String description;
     @Column(name = "event_date")
-    private String eventDate;
+    private LocalDateTime eventDate;
     private Boolean paid;
     @Column(name = "participant_limit")
     private Integer participantLimit;
@@ -55,8 +55,5 @@ public class Event {
     private String state = "PENDING";
     @Column(name = "created_on")
     private String createdOn = LocalDateTime.now().toString();
-    /*@ElementCollection
-    @CollectionTable(name="states", joinColumns=@JoinColumn(name="event_id"))
-    @Column(name="name")
-    private Set<String> state = new HashSet<>();*/
+
 }

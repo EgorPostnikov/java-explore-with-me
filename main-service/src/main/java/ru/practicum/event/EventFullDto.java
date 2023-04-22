@@ -7,6 +7,7 @@ import lombok.ToString;
 import ru.practicum.categories.CategoryDto;
 import ru.practicum.user.UserShortDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 

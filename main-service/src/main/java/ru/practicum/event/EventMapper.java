@@ -5,26 +5,39 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.user.User;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 @Mapper
 public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Mapping(target = "initiator", expression = "java(user)" )
     @Mapping(target = "category.id", source = "entity.category")
+    @Mapping(target = "eventDate",source = "entity.eventDate", qualifiedBy = WithStringToLocalDate.class)
     Event toEvent(NewEventDto entity, User user);
 
-
-
-
-
+    @WithStringToLocalDate
+    default String stringToLocalDate(String source) {
+        return LocalDateTime.parse(source, formatter).toString();
+    }
+    @WithLocalDateToString
+    default String localDateToString(LocalDateTime source) {
+        return source.format(formatter);
+    }
+    @Mapping(target = "eventDate",source = "entity.eventDate", qualifiedBy = WithLocalDateToString.class)
     EventFullDto toEventFullDto(Event entity);
+    @Mapping(target = "eventDate",source = "eventDate", qualifiedBy = WithLocalDateToString.class)
     EventShortDto toEventShortDto(Event entity);
+
     Collection<EventShortDto> toEventShortDtos (Collection<Event> entities);
+    Collection<EventFullDto> toEventFullDtos(Collection<Event> entities);
 
     //NewEventDto toNewEventDto(Event entity);
     //Collection<NewEventDto> toNewEventDtos (Collection<Event> entities);
     //Collection<EventFullDto> toEventFullDtos (Collection<Event> entities);
+
 }

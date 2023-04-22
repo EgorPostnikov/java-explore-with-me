@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS events
     annotation  VARCHAR(2000) NOT NULL,
     category_id int,
     description VARCHAR(7000) NOT NULL,
-    event_date VARCHAR(255),
+    event_date timestamp,
     location_id int,
     paid BOOL,
     participant_limit int,
