@@ -5,11 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.event.Event;
 import ru.practicum.event.EventRepository;
 
 import javax.naming.LinkException;
 import javax.validation.ValidationException;
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -86,7 +88,7 @@ public class CategoryServiceImpl implements CategoryService {
             return true;
     }
     public Boolean isCategoryFree (Integer id){
-        if (!eventRepository.existsEventsByCategoryIs(id)) {
+        if (!eventRepository.existsEventsByCategoryIdIs(id)){
             return true;
         } else {
             throw new SecurityException("Category with id=" + id + " have links");

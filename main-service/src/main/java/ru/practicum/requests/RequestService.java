@@ -11,4 +11,6 @@ public interface RequestService {
     ParticipationRequestDto cancellRequest(Integer userId, Integer requestId);
 
     ParticipationRequestDto createRequest(ParticipationRequestDto request);
+
+    ParticipationRequestDto changeRequestStatus(String status, Integer requestId);
 }

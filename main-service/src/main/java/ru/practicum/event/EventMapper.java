@@ -8,6 +8,7 @@ import ru.practicum.user.User;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 
 @Mapper
 public interface EventMapper {
@@ -17,6 +18,7 @@ public interface EventMapper {
 
     @Mapping(target = "initiator", expression = "java(user)" )
     @Mapping(target = "category.id", source = "entity.category")
+    @Mapping(target = "confirmedRequests", source = "entity.confirmedRequests", defaultValue = "0")
     @Mapping(target = "eventDate",source = "entity.eventDate", qualifiedBy = WithStringToLocalDate.class)
     Event toEvent(NewEventDto entity, User user);
 
@@ -34,6 +36,7 @@ public interface EventMapper {
     EventShortDto toEventShortDto(Event entity);
 
     Collection<EventShortDto> toEventShortDtos (Collection<Event> entities);
+    List<EventShortDto> toEventShortDtos (List<Event> entities);
     Collection<EventFullDto> toEventFullDtos(Collection<Event> entities);
 
     //NewEventDto toNewEventDto(Event entity);

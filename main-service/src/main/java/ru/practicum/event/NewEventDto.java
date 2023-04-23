@@ -28,4 +28,5 @@ public class NewEventDto {
     private Integer participantLimit;
     private Boolean requestModeration;
     private String title;
+    private Integer confirmedRequests;
 }

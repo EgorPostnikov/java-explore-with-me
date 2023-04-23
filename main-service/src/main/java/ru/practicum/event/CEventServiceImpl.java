@@ -13,9 +13,9 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -28,7 +28,7 @@ public class CEventServiceImpl implements BEventService {
     UserRepository userRepository;
     RequestRepository requestRepository;
 
-    private final RequestServiceImpl requestService;
+    RequestServiceImpl requestService;
 
     @Override
     public Collection<EventShortDto> getEventsForUser(PageRequest pageRequest, Integer userId) {
@@ -73,14 +73,16 @@ public class CEventServiceImpl implements BEventService {
         if (oldEvent == null) {
             throw new EntityNotFoundException("Event for user id #" + userId + " and events id #" + eventId + " did not found");
         }
-        if (!oldEvent.getRequestModeration()||!oldEvent.getState().equals("CANCELLED")){
+        if (oldEvent.getState().equals("PUBLISHED")) {
             throw new RuntimeException("Only pending or canceled events can be changed");
         }
-        LocalDateTime newEventDate = LocalDateTime.parse(newEvent.getEventDate(), formatter);
-        if (newEventDate.isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new RuntimeException("Дата и время на которые намечено событие не может быть раньше," +
-                    " чем через два часа от текущего момента");
-        } else if (!(newEvent.getEventDate() == null)) {
+
+         if (!(newEvent.getEventDate() == null)) {
+             LocalDateTime newEventDate = LocalDateTime.parse(newEvent.getEventDate(), formatter);
+            if (newEventDate.isBefore(LocalDateTime.now().plusHours(2))) {
+                throw new RuntimeException("Дата и время на которые намечено событие не может быть раньше," +
+                        " чем через два часа от текущего момента");
+            }
             oldEvent.setEventDate(newEventDate);
         }
         if (!(newEvent.getAnnotation() == null)) {
@@ -105,8 +107,11 @@ public class CEventServiceImpl implements BEventService {
             oldEvent.setRequestModeration(newEvent.getRequestModeration());
         }
         if (!(newEvent.getStateAction() == null)) {
-            oldEvent.setState(newEvent.getStateAction());
-            //oldEvent.setState("CANCELED");// удалить
+            if(newEvent.getStateAction().equals("SEND_TO_REVIEW")){
+                oldEvent.setState("PENDING");
+            }else if(newEvent.getStateAction().equals("CANCEL_REVIEW")) {
+                oldEvent.setState("CANCELED");
+            }
         }
         if (!(newEvent.getTitle() == null)) {
             oldEvent.setTitle(newEvent.getTitle());
@@ -133,28 +138,59 @@ public class CEventServiceImpl implements BEventService {
     public EventRequestStatusUpdateResult changeEventsRequestStatus(Integer userId,
                                                                     Integer eventId,
                                                                     EventRequestStatusUpdateRequest requestDto) {
-        List<Integer> requestIds = requestDto.getRequestIds();
-        String status = requestDto.getStatus();
-        EventFullDto event = getFullEventInfo(userId, eventId);
+
+        Event event = repository.findById(eventId).get();
         Integer participantLimit = event.getParticipantLimit();
         Integer confirmedRequests = event.getConfirmedRequests();
-        HashSet<ParticipationRequest> requestsForEvent = requestRepository.getParticipationRequestsByEventIsOrderById(eventId);
+        List<Integer> requestIds = requestDto.getRequestIds();
+        String status = requestDto.getStatus();
 
-        for (Integer requestId : requestIds) {
-            int i=1;
-            if (i>confirmedRequests) {
+        EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult(
+                new ArrayList<>(), new ArrayList<>());
 
-                i++;
+        if (status.equals("REJECTED")) {
+            for (Integer requestId : requestIds) {
+                ParticipationRequestDto request = requestService.changeRequestStatus("REJECTED", requestId);
+                result.getRejectedRequests().add(request);
             }
-
-
+            return result;
         }
-        return new EventRequestStatusUpdateResult(Collections.emptyList(), Collections.emptyList());
-        //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-        //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
-        //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
-        //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
 
+        //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
+        else if ((participantLimit == 0) || (event.getRequestModeration() == false)) {
+            Integer finalConfirmedRequest = confirmedRequests;
+            for (Integer requestId : requestIds) {
+                //статус можно изменить
+                // только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
+                ParticipationRequestDto request = requestService.changeRequestStatus("CONFIRMED", requestId);
+                finalConfirmedRequest++;
+                result.getConfirmedRequests().add(request);
+            }
+            event.setConfirmedRequests(finalConfirmedRequest);
+            repository.save(event);
+            return result;
+        }
+        //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
+        else if (participantLimit == confirmedRequests) {
+            throw new RuntimeException("The participant limit has been reached");
+        } else {
+            for (Integer requestId : requestIds) {
+                Integer requestQty = confirmedRequests;
+                //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
+                if (participantLimit >= requestQty) {
+                    requestQty++;
+                    ParticipationRequestDto request = requestService.changeRequestStatus("CONFIRMED", requestId);
+                    result.getConfirmedRequests().add(request);
+                    event.setConfirmedRequests(requestQty);
+                } else {
+                    requestQty++;
+                    ParticipationRequestDto request = requestService.changeRequestStatus("REJECTED", requestId);
+                    result.getRejectedRequests().add(request);
+                }
+            }
+            repository.save(event);
+            return result;
+        }
     }
 
     @Override
@@ -259,5 +295,9 @@ public class CEventServiceImpl implements BEventService {
         EventFullDto event = EventMapper.INSTANCE.toEventFullDto(entity);
         log.info("Event with id {} get", eventId);
         return event;
+    }
+
+    public List<EventShortDto> getShortEvents (List<Integer> ids) {
+        return EventMapper.INSTANCE.toEventShortDtos(repository.getEventsByIdIn(ids));
     }
 }

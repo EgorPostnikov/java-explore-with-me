@@ -11,6 +11,7 @@ import ru.practicum.apiError.Response;
 import ru.practicum.requests.ParticipationRequestDto;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -19,7 +20,6 @@ import java.util.NoSuchElementException;
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class APrivateEventController {
     private final CEventServiceImpl service;
 
@@ -39,7 +39,7 @@ public class APrivateEventController {
     @ResponseStatus(HttpStatus.CREATED)
     //Добавление нового события
     public EventFullDto createEvent(@PathVariable() Integer userId,
-                                    @RequestBody(required = false) NewEventDto requestDto) {
+                                    @Valid @RequestBody(required = false) NewEventDto requestDto) {
         log.info("Creating event {} by user {}", requestDto, userId);
 
         return service.createEvent(userId, requestDto);

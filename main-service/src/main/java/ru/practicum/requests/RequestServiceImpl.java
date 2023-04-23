@@ -56,4 +56,17 @@ public class RequestServiceImpl implements RequestService {
         log.info("Request with id #{} saved", createdEntity.getId());
         return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
     }
+    @Override
+    public ParticipationRequestDto changeRequestStatus(String status, Integer requestId) {
+        ParticipationRequest entity = repository.findById(requestId).
+                orElseThrow(() -> new NoSuchElementException("Request with id="+requestId+" was not found"));
+        if(entity.getStatus().equals("PENDING")){
+            entity.setStatus(status);
+        } else {
+            throw new RuntimeException("Request must have status PENDING");
+        }
+        ParticipationRequest createdEntity = repository.save(entity);
+        log.info("Status of request with id #{} was changet to {}", createdEntity.getId(), status);
+        return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
+    }
 }

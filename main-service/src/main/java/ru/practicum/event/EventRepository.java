@@ -11,16 +11,11 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
 
-    Collection<User> getUsersByIdIn(Collection<Integer> ids,PageRequest pageRequest);
-    Collection<User> getAllBy(PageRequest pageRequest);
-
-
     Collection<Event> getEventsByInitiatorIdIs(Integer userId, PageRequest pageRequest);
 
     Event getEventsByInitiatorIdIsAndIdIs(Integer userId, Integer eventId);
 
-    Boolean existsEventsByCategoryIs(Integer categoryIid);
-
+    Boolean existsEventsByCategoryIdIs(Integer categoryId);
     Collection<Event> getEventsByInitiator_IdIsInAndStateIsInAndCategory_IdIsInAndEventDateAfterAndEventDateBefore(List<Integer> users, List<String> states, List<Integer> categories, LocalDateTime start, LocalDateTime end, PageRequest pageRequest);
 
     @Query(" select e from Event e " +
@@ -41,4 +36,6 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             " or upper(e.annotation) like upper(concat('%', ?1, '%'))) ")
 
     Collection<Event> getAllEventsByText( String text, List<Integer> categories,Boolean paid, LocalDateTime start, LocalDateTime end, String state, PageRequest pageRequest);
+
+    List<Event> getEventsByIdIn(List<Integer> ids);
 }
