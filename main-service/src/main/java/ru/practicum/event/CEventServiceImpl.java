@@ -3,7 +3,9 @@ package ru.practicum.event;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.practicum.requests.*;
 import ru.practicum.user.User;
@@ -13,13 +15,11 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
+
 public class CEventServiceImpl implements BEventService {
     private static final Logger log = LoggerFactory.getLogger(CEventServiceImpl.class);
 
@@ -28,7 +28,6 @@ public class CEventServiceImpl implements BEventService {
     UserRepository userRepository;
     RequestRepository requestRepository;
 
-    RequestServiceImpl requestService;
 
     @Override
     public Collection<EventShortDto> getEventsForUser(PageRequest pageRequest, Integer userId) {
@@ -124,8 +123,9 @@ public class CEventServiceImpl implements BEventService {
 
     @Override
     public Collection<ParticipationRequestDto> getRequestsForEventsOfUser(Integer userId, Integer eventId) {
+        userId++;
         Collection<ParticipationRequest> userRequestsForEvent = requestRepository.
-                getParticipationRequestsByEventIsAndAndRequesterIs(userId, eventId);
+                getParticipationRequestsByRequesterIsAndEventIs(userId, eventId);
 
         log.info("Requests of user id #{} for event id #{}  get, requests qty is {}", userId, eventId, userRequestsForEvent.size());
         if (userRequestsForEvent.isEmpty()) {
@@ -150,7 +150,7 @@ public class CEventServiceImpl implements BEventService {
 
         if (status.equals("REJECTED")) {
             for (Integer requestId : requestIds) {
-                ParticipationRequestDto request = requestService.changeRequestStatus("REJECTED", requestId);
+                ParticipationRequestDto request = changeRequestStatus("REJECTED", requestId);
                 result.getRejectedRequests().add(request);
             }
             return result;
@@ -162,7 +162,7 @@ public class CEventServiceImpl implements BEventService {
             for (Integer requestId : requestIds) {
                 //статус можно изменить
                 // только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
-                ParticipationRequestDto request = requestService.changeRequestStatus("CONFIRMED", requestId);
+                ParticipationRequestDto request = changeRequestStatus("CONFIRMED", requestId);
                 finalConfirmedRequest++;
                 result.getConfirmedRequests().add(request);
             }
@@ -179,12 +179,12 @@ public class CEventServiceImpl implements BEventService {
                 //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
                 if (participantLimit >= requestQty) {
                     requestQty++;
-                    ParticipationRequestDto request = requestService.changeRequestStatus("CONFIRMED", requestId);
+                    ParticipationRequestDto request = changeRequestStatus("CONFIRMED", requestId);
                     result.getConfirmedRequests().add(request);
                     event.setConfirmedRequests(requestQty);
                 } else {
                     requestQty++;
-                    ParticipationRequestDto request = requestService.changeRequestStatus("REJECTED", requestId);
+                    ParticipationRequestDto request = changeRequestStatus("REJECTED", requestId);
                     result.getRejectedRequests().add(request);
                 }
             }
@@ -220,7 +220,7 @@ public class CEventServiceImpl implements BEventService {
 
     @Override
     public EventFullDto updateEvent(Integer eventId, UpdateEventAdminRequest requestDto) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         Event oldEvent = repository.findById(eventId).get();
         if (oldEvent == null) {
             throw new EntityNotFoundException("Event  id #" + eventId + " did not found");
@@ -235,7 +235,12 @@ public class CEventServiceImpl implements BEventService {
             oldEvent.setDescription(requestDto.getDescription());
         }
         if (!(requestDto.getEventDate() == null)) {
-            oldEvent.setEventDate(LocalDateTime.parse(requestDto.getEventDate(), formatter));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime newEventDate =LocalDateTime.parse(requestDto.getEventDate(), formatter);
+            if(newEventDate.isBefore(LocalDateTime.now().plusHours(1))){
+                throw new RuntimeException("Event time have to be not late than 1 hour of now");
+            }
+            oldEvent.setEventDate(newEventDate);
         }
         if (!(requestDto.getLocation() == null)) {
             oldEvent.setLocation(requestDto.getLocation());
@@ -250,8 +255,17 @@ public class CEventServiceImpl implements BEventService {
             oldEvent.setRequestModeration(requestDto.getRequestModeration());
         }
         if (!(requestDto.getStateAction() == null)) {
-            oldEvent.setState(requestDto.getStateAction());
-            oldEvent.setState("CANCELED");// удалить
+            String newState= requestDto.getStateAction();
+            String oldState= oldEvent.getState();
+            if (newState.equals("PUBLISH_EVENT")) {
+                if(!(oldState.equals("PENDING"))){
+                    throw new RuntimeException("Cannot publish the event because it's not in the right state: PUBLISHED");
+                } oldEvent.setState("PUBLISHED");
+            } else if (newState.equals("REJECT_EVENT")){
+                if(oldState.equals("PUBLISHED")) {
+                    throw new RuntimeException("Cannot cancel the event because it's not in the right state: PENDING");
+                } oldEvent.setState("CANCELLED");
+            }
         }
         if (!(requestDto.getTitle() == null)) {
             oldEvent.setTitle(requestDto.getTitle());
@@ -299,5 +313,19 @@ public class CEventServiceImpl implements BEventService {
 
     public List<EventShortDto> getShortEvents (List<Integer> ids) {
         return EventMapper.INSTANCE.toEventShortDtos(repository.getEventsByIdIn(ids));
+    }
+
+    public ParticipationRequestDto changeRequestStatus(String status, Integer requestId) {
+        ParticipationRequest entity = requestRepository.findById(requestId).
+                orElseThrow(() -> new NoSuchElementException("Request with id=" + requestId + " was not found"));
+        if (entity.getStatus().equals("PENDING")) {
+            entity.setStatus(status);
+        } else {
+            throw new RuntimeException("Request must have status PENDING");
+        }
+        ParticipationRequest createdEntity = requestRepository.save(entity);
+
+        log.info("Status of request with id #{} was changet to {}", createdEntity.getId(), status);
+        return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
     }
 }

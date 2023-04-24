@@ -68,7 +68,7 @@ public class AdminEventController {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(SecurityException.class)
+    @ExceptionHandler(RuntimeException.class)
     public Response handleException(RuntimeException exception) {
         return new Response(exception.getMessage());
     }

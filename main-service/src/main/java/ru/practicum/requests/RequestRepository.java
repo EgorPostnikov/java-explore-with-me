@@ -12,7 +12,7 @@ public interface RequestRepository extends JpaRepository<ParticipationRequest, I
 
     Collection<ParticipationRequest> getParticipationRequestByRequesterIs(Integer userId, PageRequest pageRequest);
 
-    Collection<ParticipationRequest> getParticipationRequestsByEventIsAndAndRequesterIs(Integer userId, Integer eventId);
-    HashSet<ParticipationRequest>  getParticipationRequestsByEventIsOrderById (Integer eventId);
+    Collection<ParticipationRequest> getParticipationRequestsByRequesterIsAndEventIs(Integer userId, Integer eventId);
 
+    Boolean existsByEventIsAndRequesterIs(Integer eventId, Integer requesterId);
 }
