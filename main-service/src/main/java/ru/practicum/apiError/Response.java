@@ -7,10 +7,11 @@ public class Response {
     public Response() {
     }
 
-    public Response(String message,String status) {
+    public Response(String message, String status) {
         this.message = message;
         this.status = status;
     }
+
     public Response(String message) {
         this.message = message;
     }

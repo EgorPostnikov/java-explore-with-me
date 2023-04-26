@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.HitDto;
+import ru.practicum.dto.StatsDto;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,6 +17,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 public class StatsClient {
@@ -27,7 +30,7 @@ public class StatsClient {
     private final HttpClient httpClient;
 
     public StatsClient(@Value("ewm-main-service") String application,
-                       @Value("services.stats-service.uri:http://localhost:9090") String statsServiceUri,
+                       @Value("http://localhost:9090") String statsServiceUri,
                        ObjectMapper json) {
         this.application = application;
         this.statsServiceUri = statsServiceUri;
@@ -37,10 +40,8 @@ public class StatsClient {
                 .build();
     }
 
-    public void saveHit() {
-        HitDto hit = new HitDto(10L, application, statsServiceUri, null, LocalDateTime.now());
-
-        try {
+    public void saveHit(HitDto hit) {
+           try {
             HttpRequest.BodyPublisher bodyPublisher = HttpRequest
                     .BodyPublishers
                     .ofString(json.writeValueAsString(hit));
@@ -54,13 +55,14 @@ public class StatsClient {
             HttpResponse<Void> response = httpClient.send(hitRequest, HttpResponse.BodyHandlers.discarding());
 
 
+
         } catch (Exception e) {
             log.warn("Cannot record hit", e);
         }
     }
 
-    public String loadStats() {
-        String value = "";
+    public Collection<StatsDto> loadStats() {
+        Collection<StatsDto> value = new ArrayList<>();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(statsServiceUri + "/stat"))
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")

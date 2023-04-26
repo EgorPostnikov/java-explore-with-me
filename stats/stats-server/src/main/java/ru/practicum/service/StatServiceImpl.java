@@ -14,6 +14,7 @@ import ru.practicum.model.Stats;
 import ru.practicum.model.StatsRequest;
 import ru.practicum.storage.StatRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -25,18 +26,28 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public HitDto createHit(HitDto hitDto) {
-        Hit hit = repository.save(HitMapper.INSTANCE.toHit(hitDto));
+        Hit entity = HitMapper.INSTANCE.toHit(hitDto);
+        Hit hit = repository.save(entity);
         log.info("Hit with id #{} saved", hit.getId());
         return HitMapper.INSTANCE.toHitDto(hit);
     }
 
     @Override
     public Collection<StatsDto> viewStats(StatsRequest request) {
-        Collection<Stats> stats;
+        Collection<Stats> stats = new ArrayList<>();
         if (request.getUnique()) {
-            stats = repository.viewStatsUnique(request.getUris(), request.getStart(), request.getEnd());
+            if (request.getUris()==null) {
+                stats = repository.viewStatsUnique( request.getStart(), request.getEnd());
+            } else {
+                stats = repository.viewStatsUniqueUris(request.getUris(), request.getStart(), request.getEnd());
+            }
+
         } else {
-            stats = repository.viewStats(request.getUris(), request.getStart(), request.getEnd());
+            if (request.getUris()==null) {
+                stats = repository.viewStats( request.getStart(), request.getEnd());
+            } else {
+                stats = repository.viewStatsUris(request.getUris(), request.getStart(), request.getEnd());
+            }
         }
         log.info("List of hits got, hits qty is - {} ", stats.size());
         return StatsMapper.INSTANCE.toStatsDtos(stats);

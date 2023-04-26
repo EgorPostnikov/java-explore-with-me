@@ -7,8 +7,10 @@ import java.util.Collection;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Collection<User> getUsersByIdIn(Collection<Integer> ids,PageRequest pageRequest);
+    Collection<User> getUsersByIdIn(Collection<Integer> ids, PageRequest pageRequest);
+
     Collection<User> getAllBy(PageRequest pageRequest);
+
     Boolean existsUserByName(String name);
 
 }

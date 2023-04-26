@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.categories.Category;
 
 import javax.validation.ValidationException;
 import java.util.Collection;
@@ -18,11 +17,11 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public Collection<UserDto> getAllUsers(Collection<Integer> ids,PageRequest pageRequest) {
+    public Collection<UserDto> getAllUsers(Collection<Integer> ids, PageRequest pageRequest) {
         Collection<User> users;
-        if(ids==null){
-            users=userRepository.getAllBy(pageRequest);
-        }else {
+        if (ids == null) {
+            users = userRepository.getAllBy(pageRequest);
+        } else {
             users = userRepository.getUsersByIdIn(ids, pageRequest);
         }
         log.info("Users list found, users quantity is #{}", users.size());
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Integer userId) {
-        if (!userRepository.existsById(userId)){
+        if (!userRepository.existsById(userId)) {
             throw new NoSuchElementException("User with id=" + userId + " was not found!");
         }
         userRepository.deleteById(userId);
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     public Boolean userValidation(User user) {
         String name = user.getName();
-        if (name==null) {
+        if (name == null) {
             throw new ValidationException("Field: name. Error: must not be null. Value: null");
         } else if (name.isBlank()) {
             throw new ValidationException("Field: name. Error: must not be blank. Value: null");

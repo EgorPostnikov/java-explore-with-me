@@ -24,12 +24,13 @@ public class StatsServiceController {
         return service.createHit(entity);
     }
 
+
     @GetMapping(path = "/stats")
     @ResponseStatus(HttpStatus.OK)
     public Collection<StatsDto> viewStats(@RequestParam LocalDateTime start,
                                           @RequestParam LocalDateTime end,
-                                          @RequestParam List<String> uris,
-                                          @RequestParam(defaultValue = "false") Boolean unique) {
+                                          @RequestParam (required = false) List<String> uris,
+                                          @RequestParam (defaultValue = "false") Boolean unique) {
         return service.viewStats(new StatsRequest(start, end, uris, unique));
     }
 }

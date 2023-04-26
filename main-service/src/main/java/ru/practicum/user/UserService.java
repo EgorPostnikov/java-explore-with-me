@@ -10,5 +10,5 @@ public interface UserService {
 
     UserDto createUser(NewUserRequest requestDto);
 
-   void deleteUser(Integer userId);
+    void deleteUser(Integer userId);
 }

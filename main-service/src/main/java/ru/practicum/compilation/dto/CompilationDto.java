@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.event.Event;
-import ru.practicum.event.EventShortDto;
+import ru.practicum.event.dto.EventShortDto;
 
 import java.util.List;
+
 @Setter
 @Getter
 @AllArgsConstructor
