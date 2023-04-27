@@ -9,7 +9,5 @@ import java.util.Collection;
 
 @Repository
 public interface CompilationRepository extends JpaRepository<Compilation, Integer> {
-
-
     Collection<Compilation> getCompilationsByPinnedIs(Boolean pinned, PageRequest pageRequest);
 }

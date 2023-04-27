@@ -52,7 +52,6 @@ public class AdminCategoryController {
     @ExceptionHandler(ValidationException.class)
     public ApiError handleException(ValidationException exception) {
         return new ApiError(exception.getMessage(),
-                //exception.getCause().toString(),
                 HttpStatus.BAD_REQUEST.toString(),
                 LocalDateTime.now().toString()
         );

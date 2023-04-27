@@ -20,9 +20,7 @@ import java.util.*;
 @AllArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
     private static final Logger log = LoggerFactory.getLogger(CompilationServiceImpl.class);
-
     CompilationRepository repository;
-
     EventServiceImpl eventService;
 
 
@@ -42,10 +40,8 @@ public class CompilationServiceImpl implements CompilationService {
 
     }
 
-    public Boolean isCompilationExist(Integer compId) {
-        if (repository.existsById(compId)) {
-            return true;
-        } else {
+    void isCompilationExist(Integer compId) {
+        if (!repository.existsById(compId)) {
             throw new NoSuchElementException("Compilation with id=" + compId + " was not found");
         }
     }
@@ -55,7 +51,8 @@ public class CompilationServiceImpl implements CompilationService {
 
         Compilation newEntity = CompilationMapper.INSTANCE.toCompilation(requestDto);
         isCompilationExist(compId);
-        Compilation oldEntity = repository.findById(compId).get();
+        Compilation oldEntity = repository.findById(compId).
+                orElseThrow(() -> new NoSuchElementException("Compilation was not found"));
 
         if (!(newEntity.getTitle() == null)) {
             oldEntity.setTitle(newEntity.getTitle());

@@ -1,10 +1,15 @@
-package ru.practicum.user;
+package ru.practicum.user.service;
 
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.user.dto.NewUserRequest;
+import ru.practicum.user.mapper.UserMapper;
+import ru.practicum.user.repository.UserRepository;
+import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.model.User;
 
 import javax.validation.ValidationException;
 import java.util.Collection;
@@ -48,8 +53,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
-    public Boolean userValidation(User user) {
+    void userValidation(User user) {
         String name = user.getName();
         if (name == null) {
             throw new ValidationException("Field: name. Error: must not be null. Value: null");
@@ -58,7 +62,6 @@ public class UserServiceImpl implements UserService {
         } else if (userRepository.existsUserByName(user.getName())) {
             throw new SecurityException("User with name=" + user.getName() + " already exist");
         }
-        return true;
     }
 
 

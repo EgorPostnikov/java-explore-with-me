@@ -1,4 +1,4 @@
-package ru.practicum.user;
+package ru.practicum.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

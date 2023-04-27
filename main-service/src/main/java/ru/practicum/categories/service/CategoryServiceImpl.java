@@ -20,9 +20,7 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private static final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
-
     CategoryRepository repository;
-
     EventRepository eventRepository;
 
     @Override
@@ -57,7 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getCategory(Integer catId) {
         isCategoryExist(catId);
-        Category category = repository.findById(catId).get();
+        Category category = repository.findById(catId).
+                orElseThrow(() -> new NoSuchElementException("Category was not found"));
         log.info("Category with id #{} got", catId);
         return CategoryMapper.INSTANCE.toCategoryDto(category);
     }
@@ -69,16 +68,14 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.INSTANCE.toCategoryDtos(categories);
     }
 
-    public Boolean isCategoryExist(Integer catId) {
-        if (repository.existsById(catId)) {
-            return true;
-        } else {
+    void isCategoryExist(Integer catId) {
+        if (!repository.existsById(catId)) {
             throw new NoSuchElementException("Category with id=" + catId + " was not found");
         }
     }
 
 
-    public Boolean categoryValidation(Category category) {
+    void categoryValidation(Category category) {
         String name = category.getName();
         if (name == null) {
             throw new ValidationException("Field: name. Error: must not be null. Value: null");
@@ -87,17 +84,11 @@ public class CategoryServiceImpl implements CategoryService {
         } else if (repository.existsCategoryByNameIs(category.getName())) {
             throw new SecurityException("Category with name=" + category.getName() + " already exist");
         }
-        return true;
     }
 
-    public Boolean isCategoryFree(Integer id) {
-        if (!eventRepository.existsEventsByCategoryIdIs(id)) {
-            return true;
-        } else {
+    void isCategoryFree(Integer id) {
+        if (eventRepository.existsEventsByCategoryIdIs(id)) {
             throw new SecurityException("Category with id=" + id + " have links");
         }
-
     }
-
-
 }

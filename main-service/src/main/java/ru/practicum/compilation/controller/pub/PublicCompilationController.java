@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.StatsClient;
 import ru.practicum.apiError.Response;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.service.CompilationService;
@@ -24,11 +23,9 @@ import java.util.NoSuchElementException;
 @Validated
 public class PublicCompilationController {
     private final CompilationService service;
-    private final StatsClient statsClient;
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    //Получение подборок событий
     public Collection<CompilationDto> getCompilations(@RequestParam(defaultValue = "true") Boolean pinned,
                                                       @RequestParam(defaultValue = "0") Integer from,
                                                       @RequestParam(defaultValue = "10") Integer size) {
@@ -40,10 +37,8 @@ public class PublicCompilationController {
 
     @GetMapping("/{compId}")
     @ResponseStatus(HttpStatus.OK)
-    //Получение подборки событий по его айди
     public CompilationDto getCompilation(@PathVariable Integer compId) {
         log.info("Get compilation with Id {}", compId);
-        //statsClient.saveHit();
         return service.getCompilation(compId);
     }
 

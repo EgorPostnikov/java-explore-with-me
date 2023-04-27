@@ -34,7 +34,6 @@ public class PublicEventController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    //Получение событий с возможностью фильтрации
     public Collection<EventShortDto> getFullEventsInfo(@RequestParam() String text,
                                                        @RequestParam() List<Integer> categories,
                                                        @RequestParam() Boolean paid,
@@ -59,24 +58,19 @@ public class PublicEventController {
             start = LocalDateTime.parse(rangeStart, formatter);
             end = LocalDateTime.parse(rangeEnd, formatter);
         }
-        log.info("Get all events from {},size {}, for users {}", from, size);
         statsClient.saveHit(new HitDto(null,
                 "ewm-main-service",
                 request.getRequestURI(),
                 request.getRemoteAddr(),
-                LocalDateTime.now().toString() ));
+                LocalDateTime.now().toString()));
+        log.info("Get all events from {},size {}", from, size);
         return service.getShortEventsInfo(text, categories, paid, onlyAvailable, start, end, sort, pageRequest);
-        //+это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события
-        //+текстовый поиск (по аннотации и подробному описанию) должен быть без учета регистра букв
-        //+если в запросе не указан диапазон дат [rangeStart-rangeEnd], то нужно выгружать события, которые произойдут позже текущей даты и времени
-        //+информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие
+        //информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие
         //информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
-        //+В случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список
     }
 
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    //Получение подробной информации об опубликованном событии по его идентификатору
     public EventFullDto getFullEvent(@PathVariable() Integer eventId,
                                      HttpServletRequest request) {
         log.info("Get event {}", eventId);
@@ -84,11 +78,9 @@ public class PublicEventController {
                 "ewm-main-service",
                 request.getRequestURI(),
                 request.getRemoteAddr(),
-                LocalDateTime.now().toString() ));
+                LocalDateTime.now().toString()));
         return service.getFullEvent(eventId);
-        //В случае, если события с заданным id не найдено, возвращает статус код 404
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException.class)

@@ -10,9 +10,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.apiError.ApiError;
 import ru.practicum.apiError.Response;
-import ru.practicum.user.NewUserRequest;
-import ru.practicum.user.UserDto;
-import ru.practicum.user.UserService;
+import ru.practicum.user.dto.NewUserRequest;
+import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.service.UserService;
 
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
@@ -44,7 +44,6 @@ public class AdminUserController {
         return service.getAllUsers(ids, pageRequest);
     }
 
-
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteUser(@PathVariable Integer userId) {
@@ -56,7 +55,6 @@ public class AdminUserController {
     @ExceptionHandler(ValidationException.class)
     public ApiError handleException(ValidationException exception) {
         return new ApiError(exception.getMessage(),
-                //exception.getCause().toString(),
                 HttpStatus.BAD_REQUEST.toString(),
                 LocalDateTime.now().toString()
         );

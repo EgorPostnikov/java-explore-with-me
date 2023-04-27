@@ -59,31 +59,6 @@ public class PublicCategoryController {
     public Response handleException(NoSuchElementException exception) {
         return new Response(exception.getMessage());
     }
-   /* @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ValidationException.class)
-    public ApiError handleException(ValidationException exception) {
-        return new ApiError(exception.getMessage(),
-                exception.getCause().toString(),
-                HttpStatus.BAD_REQUEST.toString(),
-                LocalDateTime.now().toString());
-    }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(SecurityException.class)
-    public ApiError handleException(RuntimeException exception) {
-        return new ApiError(exception.getMessage(),
-                exception.getCause().toString(),
-                HttpStatus.CONFLICT.toString(),
-                LocalDateTime.now().toString());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoSuchElementException.class)
-    public ApiError handleException(NoSuchElementException exception) {
-        return new ApiError(exception.getMessage(),
-                exception.getCause().toString(),
-                HttpStatus.NOT_FOUND.toString(),
-                LocalDateTime.now().toString());
-    }*/
 
 }

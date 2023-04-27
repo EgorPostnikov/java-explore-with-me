@@ -28,19 +28,16 @@ public class PrivateRequestController {
 
     @GetMapping("/{userId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    //получение информации о заявках текущего пользователя на участие в чужих событиях
     public Collection<ParticipationRequestDto> getRequest(@PathVariable Integer userId,
                                                           @RequestParam(defaultValue = "0") Integer from,
                                                           @RequestParam(defaultValue = "10") Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
         log.info("Get Request from user {}", userId);
         return service.getUserRequests(userId, pageRequest);
-        //В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список
     }
 
     @PostMapping("/{userId}/requests")
     @ResponseStatus(HttpStatus.CREATED)
-    //Добавление запроса от текущего пользователя на участие в событии
     public ParticipationRequestDto createRequest(@PathVariable Integer userId,
                                                  @RequestParam Integer eventId) {
         log.info("Creating Request from user {}", userId);
@@ -51,17 +48,11 @@ public class PrivateRequestController {
                 userId,
                 "PENDING");
         return service.createRequest(request);
-        //нельзя добавить повторный запрос (Ожидается код ошибки 409)
-        //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
-        //нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
-        //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-        //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
     }
 
 
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
     @ResponseStatus(HttpStatus.OK)
-    //Отмена своего запроса на участие в событии
     public ParticipationRequestDto cancellRequest(@PathVariable Integer userId,
                                                   @PathVariable Integer requestId) {
         log.info("Cancelling Request # {} from user {}", requestId, userId);

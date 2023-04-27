@@ -13,8 +13,7 @@ import ru.practicum.requests.dto.ParticipationRequestDto;
 import ru.practicum.requests.mapper.RequestMapper;
 import ru.practicum.requests.model.ParticipationRequest;
 import ru.practicum.requests.repository.RequestRepository;
-import ru.practicum.user.User;
-import ru.practicum.user.UserRepository;
+import ru.practicum.user.repository.UserRepository;
 
 import java.util.*;
 
@@ -28,7 +27,6 @@ public class RequestServiceImpl implements RequestService {
     RequestRepository requestRepository;
     EventServiceImpl eventService;
 
-
     @Override
     public Collection<ParticipationRequestDto> getUserRequests(Integer userId, PageRequest pageRequest) {
         Collection<ParticipationRequest> entities = requestRepository.getParticipationRequestByRequesterIs(userId, pageRequest);
@@ -39,20 +37,17 @@ public class RequestServiceImpl implements RequestService {
         return RequestMapper.INSTANCE.toParticipationRequestDtos(entities);
     }
 
-
     @Override
     public ParticipationRequestDto cancellRequest(Integer userId, Integer requestId) {
-        User user = userRepository.findById(userId).
+        userRepository.findById(userId).
                 orElseThrow(() -> new RuntimeException("User not found"));
-
         ParticipationRequest entity = requestRepository.findById(requestId).
                 orElseThrow(() -> new NoSuchElementException("Request with id=" + requestId + " was not found"));
-        if (entity.getRequester() == userId) {
+        if (entity.getRequester().equals(userId)) {
             entity.setStatus("CANCELED");
         } else {
             throw new RuntimeException("User have not roots");
         }
-
         ParticipationRequest createdEntity = requestRepository.save(entity);
         log.info("Request with id #{} cancelled", createdEntity.getId());
         return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
@@ -60,22 +55,20 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto createRequest(ParticipationRequestDto request) {
-        User user = userRepository.findById(request.getRequester()).
+        userRepository.findById(request.getRequester()).
                 orElseThrow(() -> new RuntimeException("User not found"));
         Event event = eventRepository.findById(request.getEvent()).
                 orElseThrow(() -> new RuntimeException("Event not found"));
-
         if (isRequestExist(request)) {
             throw new RuntimeException("Request already exist");
         }
-        if (event.getInitiator().getId() == request.getRequester()) {
+        if (event.getInitiator().getId().equals(request.getRequester())) {
             throw new RuntimeException("Creator of event could not sent request for event");
         }
         if (!event.getState().equals("PUBLISHED")) {
             throw new RuntimeException("Event have not status: PUBLISHED");
         }
-
-        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
+        if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             throw new RuntimeException("Participation limit is reached");
         }
         ParticipationRequest entity = RequestMapper.INSTANCE.toParticipationRequest(request);
@@ -88,21 +81,6 @@ public class RequestServiceImpl implements RequestService {
                     request.getEvent(),
                     new EventRequestStatusUpdateRequest(requestIds, "CONFIRMED"));
         }
-        return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
-    }
-
-    @Override
-    public ParticipationRequestDto changeRequestStatus(String status, Integer requestId) {
-        ParticipationRequest entity = requestRepository.findById(requestId).
-                orElseThrow(() -> new NoSuchElementException("Request with id=" + requestId + " was not found"));
-        if (entity.getStatus().equals("PENDING")) {
-            entity.setStatus(status);
-        } else {
-            throw new RuntimeException("Request must have status PENDING");
-        }
-        ParticipationRequest createdEntity = requestRepository.save(entity);
-
-        log.info("Status of request with id #{} was changet to {}", createdEntity.getId(), status);
         return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
     }
 

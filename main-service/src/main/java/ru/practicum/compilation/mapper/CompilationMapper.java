@@ -8,9 +8,6 @@ import ru.practicum.compilation.dto.NewCompilationDto;
 import ru.practicum.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.compilation.model.Compilation;
 
-import java.util.Collection;
-
-
 @Mapper
 public interface CompilationMapper {
 
@@ -25,7 +22,5 @@ public interface CompilationMapper {
     Compilation toCompilation(UpdateCompilationRequest entity);
 
     CompilationDto toCompilationDto(Compilation entity);
-
-    Collection<CompilationDto> toCompilationDtos(Collection<Compilation> entities);
 
 }

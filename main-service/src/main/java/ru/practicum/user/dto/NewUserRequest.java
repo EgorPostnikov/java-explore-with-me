@@ -1,17 +1,16 @@
-package ru.practicum.user;
+package ru.practicum.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Setter
 @Getter
 @AllArgsConstructor
 @ToString
-public class UserShortDto {
-    private Integer id;
+public class NewUserRequest {
+
+    private String email;
     private String name;
 }
-

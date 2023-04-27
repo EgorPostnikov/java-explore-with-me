@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.StatsClient;
-import ru.practicum.dto.StatsDto;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
@@ -15,8 +14,8 @@ import ru.practicum.requests.dto.ParticipationRequestDto;
 import ru.practicum.requests.mapper.RequestMapper;
 import ru.practicum.requests.model.ParticipationRequest;
 import ru.practicum.requests.repository.RequestRepository;
-import ru.practicum.user.User;
-import ru.practicum.user.UserRepository;
+import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
@@ -29,15 +28,10 @@ import java.util.*;
 
 public class EventServiceImpl implements EventService {
     private static final Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
-
-
     EventRepository repository;
     UserRepository userRepository;
     RequestRepository requestRepository;
-
     StatsClient statsClient;
-
-
 
     @Override
     public Collection<EventShortDto> getEventsForUser(PageRequest pageRequest, Integer userId) {
@@ -139,7 +133,7 @@ public class EventServiceImpl implements EventService {
         Collection<ParticipationRequest> userRequestsForEvent = requestRepository.
                 getParticipationRequestsByRequesterIsAndEventIs(userId, eventId);
 
-        log.info("Requests of user id #{} for event id #{}  get, requests qty is {}", userId, eventId, userRequestsForEvent.size());
+        log.info("Requests of user id #{} for event id #{}  get", userId, eventId);
         if (userRequestsForEvent.isEmpty()) {
             userRequestsForEvent = Collections.emptyList();
         }
@@ -150,8 +144,8 @@ public class EventServiceImpl implements EventService {
     public EventRequestStatusUpdateResult changeEventsRequestStatus(Integer userId,
                                                                     Integer eventId,
                                                                     EventRequestStatusUpdateRequest requestDto) {
-
-        Event event = repository.findById(eventId).get();
+        Event event = repository.findById(eventId).
+                orElseThrow(() -> new NoSuchElementException("Event was not found"));
         Integer participantLimit = event.getParticipantLimit();
         Integer confirmedRequests = event.getConfirmedRequests();
         List<Integer> requestIds = requestDto.getRequestIds();
@@ -168,12 +162,9 @@ public class EventServiceImpl implements EventService {
             return result;
         }
 
-        //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-        else if ((participantLimit == 0) || (event.getRequestModeration() == false)) {
+        else if ((participantLimit == 0) || (!event.getRequestModeration())) {
             Integer finalConfirmedRequest = confirmedRequests;
             for (Integer requestId : requestIds) {
-                //статус можно изменить
-                // только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
                 ParticipationRequestDto request = changeRequestStatus("CONFIRMED", requestId);
                 finalConfirmedRequest++;
                 result.getConfirmedRequests().add(request);
@@ -182,20 +173,17 @@ public class EventServiceImpl implements EventService {
             repository.save(event);
             return result;
         }
-        //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
-        else if (participantLimit == confirmedRequests) {
+        else if (participantLimit.equals(confirmedRequests)) {
             throw new RuntimeException("The participant limit has been reached");
         } else {
             for (Integer requestId : requestIds) {
                 Integer requestQty = confirmedRequests;
-                //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
                 if (participantLimit >= requestQty) {
                     requestQty++;
                     ParticipationRequestDto request = changeRequestStatus("CONFIRMED", requestId);
                     result.getConfirmedRequests().add(request);
                     event.setConfirmedRequests(requestQty);
                 } else {
-                    requestQty++;
                     ParticipationRequestDto request = changeRequestStatus("REJECTED", requestId);
                     result.getRejectedRequests().add(request);
                 }
@@ -212,7 +200,6 @@ public class EventServiceImpl implements EventService {
                                                       LocalDateTime start,
                                                       LocalDateTime end,
                                                       PageRequest pageRequest) {
-
         Collection<Event> entities = repository.
                 getEventsByInitiator_IdIsInAndStateIsInAndCategory_IdIsInAndEventDateAfterAndEventDateBefore(
                         users,
@@ -221,7 +208,7 @@ public class EventServiceImpl implements EventService {
                         start,
                         end,
                         pageRequest);
-        for (Event event:  entities) {
+        for (Event event : entities) {
             event.setViews(getViews(event));
         }
         Collection<EventFullDto> events = EventMapper.INSTANCE.toEventFullDtos(entities);
@@ -236,10 +223,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto updateEvent(Integer eventId, UpdateEventAdminRequest requestDto) {
 
-        Event oldEvent = repository.findById(eventId).get();
-        if (oldEvent == null) {
-            throw new EntityNotFoundException("Event  id #" + eventId + " did not found");
-        }
+        Event oldEvent = repository.findById(eventId).
+                orElseThrow(() -> new NoSuchElementException("Event was not found"));
         if (!(requestDto.getAnnotation() == null)) {
             oldEvent.setAnnotation(requestDto.getAnnotation());
         }
@@ -274,7 +259,7 @@ public class EventServiceImpl implements EventService {
             String oldState = oldEvent.getState();
             if (newState.equals("PUBLISH_EVENT")) {
                 if (!(oldState.equals("PENDING"))) {
-                    throw new RuntimeException("Cannot publish the event because it's not in the right state: PUBLISHED");
+                    throw new RuntimeException("Cannot publish the event because it's not the right state: PUBLISHED");
                 }
                 oldEvent.setState("PUBLISHED");
             } else if (newState.equals("REJECT_EVENT")) {
@@ -306,7 +291,8 @@ public class EventServiceImpl implements EventService {
         Collection<Event> entities;
         text = text.toLowerCase();
         if (onlyAvailable) {
-            entities = repository.getOnlyAvailableEventsByText(text, categories, paid, start, end, "PUBLISHED", pageRequest);
+            entities = repository.getOnlyAvailableEventsByText(text,
+                    categories, paid, start, end, "PUBLISHED", pageRequest);
         } else {
             entities = repository.getAllEventsByText(text, categories, paid, start, end, "PUBLISHED", pageRequest);
         }
@@ -320,10 +306,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getFullEvent(Integer eventId) {
-        Event entity = repository.findById(eventId).get();
-        if (entity == null) {
-            throw new EntityNotFoundException("Event with id #" + eventId + " did not found");
-        }
+        Event entity = repository.findById(eventId).
+                orElseThrow(() -> new NoSuchElementException("Event was not found"));
         entity.setViews(getViews(entity));
         EventFullDto event = EventMapper.INSTANCE.toEventFullDto(entity);
         log.info("Event with id {} get", eventId);
@@ -347,8 +331,14 @@ public class EventServiceImpl implements EventService {
         log.info("Status of request with id #{} was changet to {}", createdEntity.getId(), status);
         return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
     }
-    public Integer getViews (Event event){
-        //StatsDto stats = statsClient.loadStats();
+
+    public Integer getViews(Event event) {
+        List<String> uris = new ArrayList<>();
+        uris.add("events/" + event.getId());
+        /*Collection<StatsDto> stats = statsClient.loadStats(new StatsRequestDto(LocalDateTime.now().minusYears(1),
+                LocalDateTime.now().plusYears(1),
+                uris,
+                false));*/
         return 1;
     }
 }

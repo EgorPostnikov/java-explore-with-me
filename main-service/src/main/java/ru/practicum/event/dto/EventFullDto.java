@@ -6,14 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.event.model.Location;
-import ru.practicum.user.UserShortDto;
+import ru.practicum.user.dto.UserShortDto;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @ToString
 public class EventFullDto {
-
     private String annotation;
     private String description;
     private String eventDate;

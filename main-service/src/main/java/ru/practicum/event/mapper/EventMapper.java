@@ -7,7 +7,7 @@ import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
-import ru.practicum.user.User;
+import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,9 +47,5 @@ public interface EventMapper {
     List<EventShortDto> toEventShortDtos(List<Event> entities);
 
     Collection<EventFullDto> toEventFullDtos(Collection<Event> entities);
-
-    //NewEventDto toNewEventDto(Event entity);
-    //Collection<NewEventDto> toNewEventDtos (Collection<Event> entities);
-    //Collection<EventFullDto> toEventFullDtos (Collection<Event> entities);
 
 }

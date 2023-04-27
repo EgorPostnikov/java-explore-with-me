@@ -17,7 +17,13 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     Boolean existsEventsByCategoryIdIs(Integer categoryId);
 
-    Collection<Event> getEventsByInitiator_IdIsInAndStateIsInAndCategory_IdIsInAndEventDateAfterAndEventDateBefore(List<Integer> users, List<String> states, List<Integer> categories, LocalDateTime start, LocalDateTime end, PageRequest pageRequest);
+    Collection<Event> getEventsByInitiator_IdIsInAndStateIsInAndCategory_IdIsInAndEventDateAfterAndEventDateBefore(
+            List<Integer> users,
+            List<String> states,
+            List<Integer> categories,
+            LocalDateTime start,
+            LocalDateTime end,
+            PageRequest pageRequest);
 
     @Query(" select e from Event e " +
             "WHERE ((e.participantLimit - e.confirmedRequests >0) OR (e.participantLimit=0)) " +

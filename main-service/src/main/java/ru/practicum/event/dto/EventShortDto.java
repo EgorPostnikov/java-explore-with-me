@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.categories.dto.CategoryDto;
-import ru.practicum.user.UserShortDto;
+import ru.practicum.user.dto.UserShortDto;
 
 @Setter
 @Getter
