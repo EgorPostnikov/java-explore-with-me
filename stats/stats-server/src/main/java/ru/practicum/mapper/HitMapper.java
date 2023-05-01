@@ -16,7 +16,7 @@ public interface HitMapper {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @WithStringToLocalDate
-    default LocalDateTime stringToLocalDate(String source) {;
+    default LocalDateTime stringToLocalDate(String source) {
         return LocalDateTime.now();
     }
 

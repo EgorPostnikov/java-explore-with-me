@@ -130,8 +130,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public Collection<ParticipationRequestDto> getRequestsForEventsOfUser(Integer userId, Integer eventId) {
         userId++;
-        Collection<ParticipationRequest> userRequestsForEvent = requestRepository.
-                getParticipationRequestsByRequesterIsAndEventIs(userId, eventId);
+        Collection<ParticipationRequest> userRequestsForEvent = requestRepository
+        .getParticipationRequestsByRequesterIsAndEventIs(userId, eventId);
 
         log.info("Requests of user id #{} for event id #{}  get", userId, eventId);
         if (userRequestsForEvent.isEmpty()) {
@@ -144,8 +144,8 @@ public class EventServiceImpl implements EventService {
     public EventRequestStatusUpdateResult changeEventsRequestStatus(Integer userId,
                                                                     Integer eventId,
                                                                     EventRequestStatusUpdateRequest requestDto) {
-        Event event = repository.findById(eventId).
-                orElseThrow(() -> new NoSuchElementException("Event was not found"));
+        Event event = repository.findById(eventId)
+        .orElseThrow(() -> new NoSuchElementException("Event was not found"));
         Integer participantLimit = event.getParticipantLimit();
         Integer confirmedRequests = event.getConfirmedRequests();
         List<Integer> requestIds = requestDto.getRequestIds();
@@ -280,8 +280,8 @@ public class EventServiceImpl implements EventService {
                                                       LocalDateTime start,
                                                       LocalDateTime end,
                                                       PageRequest pageRequest) {
-        Collection<Event> entities = repository.
-                getEventsByInitiator_IdIsInAndStateIsInAndCategory_IdIsInAndEventDateAfterAndEventDateBefore(
+        Collection<Event> entities = repository
+        .getEventsByInitiator_IdIsInAndStateIsInAndCategory_IdIsInAndEventDateAfterAndEventDateBefore(
                         users,
                         states,
                         categories,
@@ -305,8 +305,8 @@ public class EventServiceImpl implements EventService {
         Collection<Event> eventsWithViews = new ArrayList<>();
         eventsWithViews.add(entity);
         eventsWithViews = addViews(eventsWithViews);
-        entity = eventsWithViews.stream().findFirst().
-                orElseThrow(() -> new NoSuchElementException("Event was not found"));
+        entity = eventsWithViews.stream().findFirst()
+        .orElseThrow(() -> new NoSuchElementException("Event was not found"));
         EventFullDto event = EventMapper.INSTANCE.toEventFullDto(entity);
         log.info("Event with id {} get", eventId);
         return event;

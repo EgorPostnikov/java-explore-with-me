@@ -33,7 +33,7 @@ public class StatsClient {
     private final ObjectMapper json;
     private final HttpClient httpClient;
 
-    public StatsClient(@Value("services.stats-service.uri") URI statsServiceUri,
+    public StatsClient(@Value("http://localhost:9090") URI statsServiceUri,
                        ObjectMapper json) {
         this.statsServiceUri = statsServiceUri;
         this.json = json;
