@@ -37,9 +37,11 @@ public interface EventMapper {
     }
 
     @Mapping(target = "eventDate", source = "entity.eventDate", qualifiedBy = WithLocalDateToString.class)
+    @Mapping(target = "id", source = "eventId")
     EventFullDto toEventFullDto(Event entity);
 
     @Mapping(target = "eventDate", source = "eventDate", qualifiedBy = WithLocalDateToString.class)
+    @Mapping(target = "id", source = "eventId")
     EventShortDto toEventShortDto(Event entity);
 
     Collection<EventShortDto> toEventShortDtos(Collection<Event> entities);

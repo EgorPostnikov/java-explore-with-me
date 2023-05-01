@@ -18,9 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 @RestController
@@ -34,22 +32,23 @@ public class PublicEventController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public Collection<EventShortDto> getFullEventsInfo(@RequestParam() String text,
-                                                       @RequestParam() List<Integer> categories,
-                                                       @RequestParam() Boolean paid,
-                                                       @RequestParam(defaultValue = "false") Boolean onlyAvailable,
-                                                       @RequestParam(defaultValue = "undefined") String rangeStart,
-                                                       @RequestParam(defaultValue = "undefined") String rangeEnd,
-                                                       @RequestParam(defaultValue = "id") String sort,
-                                                       @RequestParam(defaultValue = "0") Integer from,
-                                                       @RequestParam(defaultValue = "10") Integer size,
-                                                       HttpServletRequest request) {
+    public Collection<EventShortDto> getShortEventsInfo(@RequestParam(defaultValue = "") String text,
+                                                        @RequestParam(required = false) List<Integer> categories,
+                                                        @RequestParam(defaultValue = "false") Boolean paid,
+                                                        @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+                                                        @RequestParam(defaultValue = "undefined") String rangeStart,
+                                                        @RequestParam(defaultValue = "undefined") String rangeEnd,
+                                                        @RequestParam(defaultValue = "EVENT_DATE") String sort,//было id
+                                                        @RequestParam(defaultValue = "0") Integer from,
+                                                        @RequestParam(defaultValue = "10") Integer size,
+                                                        HttpServletRequest request) {
         if (sort.equals("EVENT_DATE")) {
             sort = "eventDate";
         }
         if (sort.equals("VIEWS")) {
             sort = "views";
         }
+
         PageRequest pageRequest = PageRequest.of(from, size, Sort.by(sort));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime start = LocalDateTime.now();
@@ -58,13 +57,20 @@ public class PublicEventController {
             start = LocalDateTime.parse(rangeStart, formatter);
             end = LocalDateTime.parse(rangeEnd, formatter);
         }
+        Collection<EventShortDto> entities = new ArrayList<>();
+        if (categories == null) {
+            entities = Collections.emptyList();
+        } else {
+            entities = service.
+                    getShortEventsInfo(text, categories, paid, onlyAvailable, start, end, sort, pageRequest);
+        }
         statsClient.saveHit(new HitDto(null,
                 "ewm-main-service",
                 request.getRequestURI(),
                 request.getRemoteAddr(),
                 LocalDateTime.now().toString()));
-        log.info("Get all events from {},size {}", from, size);
-        return service.getShortEventsInfo(text, categories, paid, onlyAvailable, start, end, sort, pageRequest);
+        log.info("Get all events from {},size {}, with {}", from, size, categories);
+        return entities;
         //информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие
         //информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
     }
@@ -74,12 +80,13 @@ public class PublicEventController {
     public EventFullDto getFullEvent(@PathVariable() Integer eventId,
                                      HttpServletRequest request) {
         log.info("Get event {}", eventId);
+        EventFullDto entity = service.getFullEvent(eventId);
         statsClient.saveHit(new HitDto(null,
                 "ewm-main-service",
                 request.getRequestURI(),
                 request.getRemoteAddr(),
                 LocalDateTime.now().toString()));
-        return service.getFullEvent(eventId);
+        return entity;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

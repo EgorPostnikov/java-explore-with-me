@@ -2,6 +2,11 @@ package ru.practicum;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,29 +18,27 @@ import ru.practicum.dto.StatsRequestDto;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import java.util.List;
 
 @Service
 public class StatsClient {
     private static final Logger log = LoggerFactory.getLogger(StatsClient.class);
-    private final String statsServiceUri;
+    private final URI statsServiceUri;
     private final ObjectMapper json;
     private final HttpClient httpClient;
 
     public StatsClient(@Value("ewm-main-service") String application,
-                       @Value("http://localhost:9090") String statsServiceUri,
+                       @Value("http://localhost:9090") URI statsServiceUri,
                        ObjectMapper json) {
         this.statsServiceUri = statsServiceUri;
         this.json = json;
@@ -45,7 +48,7 @@ public class StatsClient {
     }
 
     public void saveHit(HitDto hit) {
-           try {
+        try {
             HttpRequest.BodyPublisher bodyPublisher = HttpRequest
                     .BodyPublishers
                     .ofString(json.writeValueAsString(hit));
@@ -65,16 +68,21 @@ public class StatsClient {
 
     public Collection<StatsDto> loadStats(StatsRequestDto requestDto) {
         Collection<StatsDto> stats = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String start = requestDto.getStart().format(formatter);
-        String end = requestDto.getEnd().format(formatter);
+        LocalDateTime start = requestDto.getStart();
+        LocalDateTime end = requestDto.getEnd();
         String unique = requestDto.getUnique().toString();
-        String uris = requestDto.getUris().toString();
+        List<String> uris = requestDto.getUris();
+        String urisToUri = "";
+        for (String uri : uris) {
+            urisToUri = urisToUri + "&uris=" + uri;
+        }
+
+        String newUri = "/stats?unique=" + unique + urisToUri;
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(statsServiceUri + "/stats?start="+start+"&end="+end+"&uris="+uris+"&unique="+unique))
+                .uri(URI.create(statsServiceUri + newUri))
+                .GET()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.ACCEPT, "application/json")
-                .GET()
                 .build();
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -88,9 +96,9 @@ public class StatsClient {
                         stats.add(stat);
                     }
                     System.out.println("Значение по ключу успешно получено.");
-                } return Collections.emptyList();
-
-
+                } else {
+                    return Collections.emptyList();
+                }
             } else {
                 System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
             }
@@ -99,5 +107,10 @@ public class StatsClient {
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
         return stats;
+    }
+
+    @SneakyThrows
+    private String encodeValue(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
     }
 }

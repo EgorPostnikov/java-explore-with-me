@@ -13,7 +13,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     Collection<Event> getEventsByInitiatorIdIs(Integer userId, PageRequest pageRequest);
 
-    Event getEventsByInitiatorIdIsAndIdIs(Integer userId, Integer eventId);
+    Event getEventsByInitiatorIdIsAndEventIdIs(Integer userId, Integer eventId);
 
     Boolean existsEventsByCategoryIdIs(Integer categoryId);
 
@@ -44,5 +44,5 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             " or upper(e.annotation) like upper(concat('%', ?1, '%'))) ")
     Collection<Event> getAllEventsByText(String text, List<Integer> categories, Boolean paid, LocalDateTime start, LocalDateTime end, String state, PageRequest pageRequest);
 
-    List<Event> getEventsByIdIn(List<Integer> ids);
+    List<Event> getEventsByEventIdIsIn(List<Integer> ids);
 }

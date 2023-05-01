@@ -39,7 +39,6 @@ public class PrivateEventController {
     public EventFullDto createEvent(@PathVariable() Integer userId,
                                     @Valid @RequestBody(required = false) NewEventDto requestDto) {
         log.info("Creating event {} by user {}", requestDto, userId);
-
         return service.createEvent(userId, requestDto);
     }
 
