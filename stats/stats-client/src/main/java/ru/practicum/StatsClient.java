@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,13 +17,10 @@ import ru.practicum.dto.StatsRequestDto;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,8 +33,7 @@ public class StatsClient {
     private final ObjectMapper json;
     private final HttpClient httpClient;
 
-    public StatsClient(@Value("ewm-main-service") String application,
-                       @Value("http://localhost:9090") URI statsServiceUri,
+    public StatsClient(@Value("services.stats-service.uri") URI statsServiceUri,
                        ObjectMapper json) {
         this.statsServiceUri = statsServiceUri;
         this.json = json;
@@ -59,7 +54,7 @@ public class StatsClient {
                     .header(HttpHeaders.CONTENT_TYPE, "application/json")
                     .header(HttpHeaders.ACCEPT, "application/json")
                     .build();
-            HttpResponse<Void> response = httpClient.send(hitRequest, HttpResponse.BodyHandlers.discarding());
+            httpClient.send(hitRequest, HttpResponse.BodyHandlers.discarding());
 
         } catch (Exception e) {
             log.warn("Cannot record hit", e);
@@ -68,13 +63,12 @@ public class StatsClient {
 
     public Collection<StatsDto> loadStats(StatsRequestDto requestDto) {
         Collection<StatsDto> stats = new ArrayList<>();
-        LocalDateTime start = requestDto.getStart();
-        LocalDateTime end = requestDto.getEnd();
         String unique = requestDto.getUnique().toString();
         List<String> uris = requestDto.getUris();
         String urisToUri = "";
         for (String uri : uris) {
-            urisToUri = urisToUri + "&uris=" + uri;
+            String line = urisToUri + "&uris=" + uri;
+            urisToUri = line;
         }
 
         String newUri = "/stats?unique=" + unique + urisToUri;
@@ -109,8 +103,4 @@ public class StatsClient {
         return stats;
     }
 
-    @SneakyThrows
-    private String encodeValue(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-    }
 }
