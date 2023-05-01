@@ -14,7 +14,6 @@ import ru.practicum.model.Stats;
 import ru.practicum.model.StatsRequest;
 import ru.practicum.storage.StatRepository;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -34,7 +33,7 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public Collection<StatsDto> viewStats(StatsRequest request) {
-        Collection<Stats> stats = new ArrayList<>();
+        Collection<Stats> stats;
         if (request.getUnique()) {
             if (request.getUris() == null) {
                 stats = repository.viewStatsUnique(request.getStart(), request.getEnd());

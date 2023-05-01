@@ -57,7 +57,7 @@ public class PublicEventController {
             start = LocalDateTime.parse(rangeStart, formatter);
             end = LocalDateTime.parse(rangeEnd, formatter);
         }
-        Collection<EventShortDto> entities = new ArrayList<>();
+        Collection<EventShortDto> entities;
         if (categories == null) {
             entities = Collections.emptyList();
         } else {
@@ -71,8 +71,6 @@ public class PublicEventController {
                 LocalDateTime.now().toString()));
         log.info("Get all events from {},size {}, with {}", from, size, categories);
         return entities;
-        //информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие
-        //информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
     }
 
     @GetMapping("/{eventId}")

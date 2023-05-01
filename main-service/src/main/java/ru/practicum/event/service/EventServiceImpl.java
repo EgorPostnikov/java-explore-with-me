@@ -30,7 +30,6 @@ import java.util.*;
 
 public class EventServiceImpl implements EventService {
     private static final Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
-    EventComparator eventComparator;
     EventRepository repository;
     UserRepository userRepository;
     RequestRepository requestRepository;
@@ -58,8 +57,7 @@ public class EventServiceImpl implements EventService {
         }
         Event createdEntity = repository.save(entity);
         log.info("Event with id #{} saved", createdEntity.getEventId());
-        EventFullDto returnedEntity = EventMapper.INSTANCE.toEventFullDto(createdEntity);
-        return returnedEntity;
+        return EventMapper.INSTANCE.toEventFullDto(createdEntity);
     }
 
     @Override
@@ -194,7 +192,6 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto updateEvent(Integer eventId, UpdateEventAdminRequest requestDto) {
-
         Event oldEvent = repository.findById(eventId).
                 orElseThrow(() -> new NoSuchElementException("Event was not found"));
         if (!(requestDto.getAnnotation() == null)) {
@@ -337,8 +334,6 @@ public class EventServiceImpl implements EventService {
         LocalDateTime start = LocalDateTime.now().minusYears(10);
         LocalDateTime end = LocalDateTime.now().plusYears(10);
         List<String> uris = new ArrayList<>();
-        Collection<Event> eventsWithViews = new ArrayList<>();
-        HashMap<Integer, Event> eventMap = new HashMap<>();
         HashMap<Integer, Integer> statMap = new HashMap<>();
         String endpoint = "/events/";
         Boolean unique = false;
@@ -356,15 +351,12 @@ public class EventServiceImpl implements EventService {
             statMap.put(eventId, Math.toIntExact(stat.getHits()));
         }
         for (Event event : events) {
-            eventMap.put(event.getEventId(), event);
-            if (statMap.containsKey(event.getEventId())) {
-                event.setViews(statMap.get(event.getEventId()));
-            } else {
-                event.setViews(0);
-            }
+            event.setViews(statMap.getOrDefault(event.getEventId(), 0));
         }
-        events.stream().sorted(eventComparator);
-        return events;
+        EventComparator comparator = new EventComparator();
+        List<Event> sortedEvents=new ArrayList<>(events);
+        sortedEvents.sort(comparator);
+        return sortedEvents;
     }
 
 }
