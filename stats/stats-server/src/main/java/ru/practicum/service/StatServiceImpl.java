@@ -36,15 +36,14 @@ public class StatServiceImpl implements StatService {
     public Collection<StatsDto> viewStats(StatsRequest request) {
         Collection<Stats> stats = new ArrayList<>();
         if (request.getUnique()) {
-            if (request.getUris()==null) {
-                stats = repository.viewStatsUnique( request.getStart(), request.getEnd());
+            if (request.getUris() == null) {
+                stats = repository.viewStatsUnique(request.getStart(), request.getEnd());
             } else {
                 stats = repository.viewStatsUniqueUris(request.getUris(), request.getStart(), request.getEnd());
             }
-
         } else {
-            if (request.getUris()==null) {
-                stats = repository.viewStats( request.getStart(), request.getEnd());
+            if (request.getUris() == null) {
+                stats = repository.viewStats(request.getStart(), request.getEnd());
             } else {
                 stats = repository.viewStatsUris(request.getUris(), request.getStart(), request.getEnd());
             }
