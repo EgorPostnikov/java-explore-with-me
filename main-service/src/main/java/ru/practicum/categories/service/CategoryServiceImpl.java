@@ -5,9 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.categories.mapper.CategoryMapper;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.NewCategoryDto;
+import ru.practicum.categories.mapper.CategoryMapper;
 import ru.practicum.categories.model.Category;
 import ru.practicum.categories.repository.CategoryRepository;
 import ru.practicum.event.repository.EventRepository;
@@ -55,8 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getCategory(Integer catId) {
         isCategoryExist(catId);
-        Category category = repository.findById(catId).
-                orElseThrow(() -> new NoSuchElementException("Category was not found"));
+        Category category = repository.findById(catId)
+                .orElseThrow(() -> new NoSuchElementException("Category was not found"));
         log.info("Category with id #{} got", catId);
         return CategoryMapper.INSTANCE.toCategoryDto(category);
     }

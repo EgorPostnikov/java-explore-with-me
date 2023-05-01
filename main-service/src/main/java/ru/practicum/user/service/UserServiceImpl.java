@@ -6,10 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.user.dto.NewUserRequest;
-import ru.practicum.user.mapper.UserMapper;
-import ru.practicum.user.repository.UserRepository;
 import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
 
 import javax.validation.ValidationException;
 import java.util.Collection;

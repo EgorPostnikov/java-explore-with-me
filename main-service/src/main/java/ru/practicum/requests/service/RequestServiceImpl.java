@@ -39,10 +39,10 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto cancellRequest(Integer userId, Integer requestId) {
-        userRepository.findById(userId).
-                orElseThrow(() -> new RuntimeException("User not found"));
-        ParticipationRequest entity = requestRepository.findById(requestId).
-                orElseThrow(() -> new NoSuchElementException("Request with id=" + requestId + " was not found"));
+        userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        ParticipationRequest entity = requestRepository.findById(requestId)
+                .orElseThrow(() -> new NoSuchElementException("Request with id=" + requestId + " was not found"));
         if (entity.getRequester().equals(userId)) {
             entity.setStatus("CANCELED");
         } else {
@@ -55,10 +55,10 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto createRequest(ParticipationRequestDto request) {
-        userRepository.findById(request.getRequester()).
-                orElseThrow(() -> new RuntimeException("User not found"));
-        Event event = eventRepository.findById(request.getEvent()).
-                orElseThrow(() -> new RuntimeException("Event not found"));
+        userRepository.findById(request.getRequester())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Event event = eventRepository.findById(request.getEvent())
+                .orElseThrow(() -> new RuntimeException("Event not found"));
         if (isRequestExist(request)) {
             throw new RuntimeException("Request already exist");
         }

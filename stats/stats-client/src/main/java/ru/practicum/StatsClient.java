@@ -54,6 +54,7 @@ public class StatsClient {
                     .header(HttpHeaders.CONTENT_TYPE, "application/json")
                     .header(HttpHeaders.ACCEPT, "application/json")
                     .build();
+            log.info("Request from StatsClient send to URL {}", statsServiceUri + "/hit");
             httpClient.send(hitRequest, HttpResponse.BodyHandlers.discarding());
 
         } catch (Exception e) {
@@ -79,9 +80,11 @@ public class StatsClient {
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .build();
         try {
+            log.info("Request from StatsClient send to URL {}", statsServiceUri + newUri);
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
                 String jsonStats = response.body();
+
                 if (!jsonStats.isBlank()) {
                     Gson gson = new Gson();
                     JsonArray jsonTaskArray = JsonParser.parseString(jsonStats).getAsJsonArray();
@@ -90,6 +93,7 @@ public class StatsClient {
                         stats.add(stat);
                     }
                     System.out.println("Значение по ключу успешно получено.");
+                    log.info("Got response from StatsServer {}", stats);
                 } else {
                     return Collections.emptyList();
                 }

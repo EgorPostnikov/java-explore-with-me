@@ -12,7 +12,6 @@ public interface RequestMapper {
 
     RequestMapper INSTANCE = Mappers.getMapper(RequestMapper.class);
 
-
     ParticipationRequestDto toParticipationRequestDto(ParticipationRequest entity);
 
     ParticipationRequest toParticipationRequest(ParticipationRequestDto entity);

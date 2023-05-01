@@ -51,8 +51,8 @@ public class CompilationServiceImpl implements CompilationService {
 
         Compilation newEntity = CompilationMapper.INSTANCE.toCompilation(requestDto);
         isCompilationExist(compId);
-        Compilation oldEntity = repository.findById(compId).
-                orElseThrow(() -> new NoSuchElementException("Compilation was not found"));
+        Compilation oldEntity = repository.findById(compId)
+                .orElseThrow(() -> new NoSuchElementException("Compilation was not found"));
 
         if (!(newEntity.getTitle() == null)) {
             oldEntity.setTitle(newEntity.getTitle());
@@ -84,8 +84,8 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto getCompilation(Integer compId) {
-        Compilation compilation = repository.findById(compId).
-                orElseThrow(() -> new NoSuchElementException("Compilation with id=" + compId + " was not found"));
+        Compilation compilation = repository.findById(compId)
+                .orElseThrow(() -> new NoSuchElementException("Compilation with id=" + compId + " was not found"));
         return convertCompilationToDto(compilation);
     }
 

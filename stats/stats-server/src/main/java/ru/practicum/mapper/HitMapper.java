@@ -14,8 +14,9 @@ public interface HitMapper {
 
     HitMapper INSTANCE = Mappers.getMapper(HitMapper.class);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @WithStringToLocalDate
-    default LocalDateTime stringToLocalDate(String source) {
+    default LocalDateTime stringToLocalDate(String source) {;
         return LocalDateTime.now();
     }
 
@@ -23,8 +24,10 @@ public interface HitMapper {
     default String localDateToString(LocalDateTime source) {
         return source.format(formatter);
     }
+
     @Mapping(target = "timestamp", source = "timestamp", qualifiedBy = WithStringToLocalDate.class)
     Hit toHit(HitDto entity);
+
     @Mapping(target = "timestamp", source = "timestamp", qualifiedBy = WithLocalDateToString.class)
     HitDto toHitDto(Hit entity);
 

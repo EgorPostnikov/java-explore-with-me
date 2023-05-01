@@ -48,8 +48,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto createEvent(Integer userId, NewEventDto requestDto) {
-        User user = userRepository.findById(userId).
-                orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Event entity = EventMapper.INSTANCE.toEvent(requestDto, user);
         if (entity.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
@@ -192,8 +192,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto updateEvent(Integer eventId, UpdateEventAdminRequest requestDto) {
-        Event oldEvent = repository.findById(eventId).
-                orElseThrow(() -> new NoSuchElementException("Event was not found"));
+        Event oldEvent = repository.findById(eventId)
+                .orElseThrow(() -> new NoSuchElementException("Event was not found"));
         if (!(requestDto.getAnnotation() == null)) {
             oldEvent.setAnnotation(requestDto.getAnnotation());
         }
@@ -300,8 +300,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getFullEvent(Integer eventId) {
-        Event entity = repository.findById(eventId).
-                orElseThrow(() -> new NoSuchElementException("Event was not found"));
+        Event entity = repository.findById(eventId)
+                .orElseThrow(() -> new NoSuchElementException("Event was not found"));
         Collection<Event> eventsWithViews = new ArrayList<>();
         eventsWithViews.add(entity);
         eventsWithViews = addViews(eventsWithViews);
@@ -317,8 +317,8 @@ public class EventServiceImpl implements EventService {
     }
 
     public ParticipationRequestDto changeRequestStatus(String status, Integer requestId) {
-        ParticipationRequest entity = requestRepository.findById(requestId).
-                orElseThrow(() -> new NoSuchElementException("Request with id=" + requestId + " was not found"));
+        ParticipationRequest entity = requestRepository.findById(requestId)
+                .orElseThrow(() -> new NoSuchElementException("Request with id=" + requestId + " was not found"));
         if (entity.getStatus().equals("PENDING")) {
             entity.setStatus(status);
         } else {
@@ -354,7 +354,7 @@ public class EventServiceImpl implements EventService {
             event.setViews(statMap.getOrDefault(event.getEventId(), 0));
         }
         EventComparator comparator = new EventComparator();
-        List<Event> sortedEvents=new ArrayList<>(events);
+        List<Event> sortedEvents = new ArrayList<>(events);
         sortedEvents.sort(comparator);
         return sortedEvents;
     }
