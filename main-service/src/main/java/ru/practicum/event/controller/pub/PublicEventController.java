@@ -65,7 +65,7 @@ public class PublicEventController {
             entities = Collections.emptyList();
         } else {
             entities = service
-            .getShortEventsInfo(text, categories, paid, onlyAvailable, start, end, sort, pageRequest);
+                    .getShortEventsInfo(text, categories, paid, onlyAvailable, start, end, sort, pageRequest);
         }
         statsClient.saveHit(new HitDto(null,
                 "ewm-main-service",

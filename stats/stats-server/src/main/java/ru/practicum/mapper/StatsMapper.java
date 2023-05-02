@@ -1,15 +1,13 @@
 package ru.practicum.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import ru.practicum.dto.StatsDto;
 import ru.practicum.model.Stats;
 
 import java.util.Collection;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface StatsMapper {
-    StatsMapper INSTANCE = Mappers.getMapper(StatsMapper.class);
 
     StatsDto toStatsDto(Stats entity);
 

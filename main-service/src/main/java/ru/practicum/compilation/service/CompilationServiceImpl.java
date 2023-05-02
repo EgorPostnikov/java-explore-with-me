@@ -20,13 +20,15 @@ import java.util.*;
 @AllArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
     private static final Logger log = LoggerFactory.getLogger(CompilationServiceImpl.class);
-    CompilationRepository repository;
-    EventServiceImpl eventService;
+    private final CompilationRepository repository;
+    private final EventServiceImpl eventService;
+
+    private final CompilationMapper compilationMapper;
 
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto requestDto) {
-        Compilation entity = CompilationMapper.INSTANCE.toCompilation(requestDto);
+        Compilation entity = compilationMapper.toCompilation(requestDto);
         Compilation createdEntity = repository.save(entity);
         log.info("Compilation {} with id #{} saved", createdEntity.getTitle(), createdEntity.getId());
         return convertCompilationToDto(createdEntity);
@@ -40,7 +42,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     }
 
-    void isCompilationExist(Integer compId) {
+    private void isCompilationExist(Integer compId) {
         if (!repository.existsById(compId)) {
             throw new NoSuchElementException("Compilation with id=" + compId + " was not found");
         }
@@ -49,7 +51,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto updateCompilation(Integer compId, UpdateCompilationRequest requestDto) {
 
-        Compilation newEntity = CompilationMapper.INSTANCE.toCompilation(requestDto);
+        Compilation newEntity = compilationMapper.toCompilation(requestDto);
         isCompilationExist(compId);
         Compilation oldEntity = repository.findById(compId)
                 .orElseThrow(() -> new NoSuchElementException("Compilation was not found"));
@@ -91,7 +93,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     public CompilationDto convertCompilationToDto(Compilation compilation) {
         List<EventShortDto> events = eventService.getShortEvents(compilation.getEventsId());
-        CompilationDto compilationDto = CompilationMapper.INSTANCE.toCompilationDto(compilation);
+        CompilationDto compilationDto = compilationMapper.toCompilationDto(compilation);
         compilationDto.setEvents(events);
         return compilationDto;
     }

@@ -22,13 +22,15 @@ import java.util.Collection;
 public class StatServiceImpl implements StatService {
     private static final Logger log = LoggerFactory.getLogger(StatServiceImpl.class);
     private final StatRepository repository;
+    private final HitMapper hitMapper;
+    private final StatsMapper statsMapper;
 
     @Override
     public HitDto createHit(HitDto hitDto) {
-        Hit entity = HitMapper.INSTANCE.toHit(hitDto);
+        Hit entity = hitMapper.toHit(hitDto);
         Hit hit = repository.save(entity);
         log.info("Hit with id #{} saved", hit.getId());
-        return HitMapper.INSTANCE.toHitDto(hit);
+        return hitMapper.toHitDto(hit);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class StatServiceImpl implements StatService {
             }
         }
         log.info("List of hits got, hits qty is - {} ", stats.size());
-        return StatsMapper.INSTANCE.toStatsDtos(stats);
+        return statsMapper.toStatsDtos(stats);
     }
 
 }

@@ -13,7 +13,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "locations", schema = "public")
-
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

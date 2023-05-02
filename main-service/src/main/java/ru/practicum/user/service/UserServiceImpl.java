@@ -19,7 +19,9 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     @Override
     public Collection<UserDto> getAllUsers(Collection<Integer> ids, PageRequest pageRequest) {
@@ -30,17 +32,17 @@ public class UserServiceImpl implements UserService {
             users = userRepository.getUsersByIdIn(ids, pageRequest);
         }
         log.info("Users list found, users quantity is #{}", users.size());
-        return UserMapper.INSTANCE.toUserDtos(users);
+        return userMapper.toUserDtos(users);
     }
 
     @Override
     public UserDto createUser(NewUserRequest userDto) {
-        User user = UserMapper.INSTANCE.toUser(userDto);
+        User user = userMapper.toUser(userDto);
         userValidation(user);
         User createdUser;
         createdUser = userRepository.save(user);
         log.info("User with id #{} saved", createdUser.getId());
-        return UserMapper.INSTANCE.toUserDto(createdUser);
+        return userMapper.toUserDto(createdUser);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    void userValidation(User user) {
+    private void userValidation(User user) {
         String name = user.getName();
         if (name == null) {
             throw new ValidationException("Field: name. Error: must not be null. Value: null");

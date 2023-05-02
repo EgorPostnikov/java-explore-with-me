@@ -2,7 +2,6 @@ package ru.practicum.event.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
@@ -14,10 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface EventMapper {
 
-    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Mapping(target = "initiator", expression = "java(user)")

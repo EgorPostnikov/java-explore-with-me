@@ -10,8 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class
-StatsRequestDto {
+public class StatsRequestDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private List<String> uris;

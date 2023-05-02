@@ -3,7 +3,6 @@ package ru.practicum.compilation.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import ru.practicum.event.dto.EventShortDto;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
-@ToString
 public class CompilationDto {
     private List<EventShortDto> events;
     private Integer id;

@@ -31,7 +31,6 @@ public class PublicCompilationController {
                                                       @RequestParam(defaultValue = "10") Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
         log.info("Get compilations with pinned = {}", pinned);
-        //statsClient.saveHit();
         return service.getCompilations(pinned, pageRequest);
     }
 

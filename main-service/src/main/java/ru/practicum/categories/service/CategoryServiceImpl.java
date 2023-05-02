@@ -20,28 +20,29 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private static final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
-    CategoryRepository repository;
-    EventRepository eventRepository;
+    private final CategoryRepository repository;
+    private final EventRepository eventRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public CategoryDto createCategory(NewCategoryDto requestDto) {
-        Category entity = CategoryMapper.INSTANCE.toCategory(requestDto);
+        Category entity = categoryMapper.toCategory(requestDto);
         categoryValidation(entity);
         Category createdEntity = repository.save(entity);
         log.info("Category {} with id #{} saved", createdEntity.getName(), createdEntity.getId());
-        return CategoryMapper.INSTANCE.toCategoryDto(createdEntity);
+        return categoryMapper.toCategoryDto(createdEntity);
     }
 
     @Override
     public CategoryDto updateCategory(Integer catId, CategoryDto requestDto) {
 
-        Category entity = CategoryMapper.INSTANCE.toCategory(requestDto);
+        Category entity = categoryMapper.toCategory(requestDto);
         entity.setId(catId);
         isCategoryExist(catId);
         categoryValidation(entity);
         Category updatedEntity = repository.save(entity);
         log.info("Category with id #{} updated", catId);
-        return CategoryMapper.INSTANCE.toCategoryDto(updatedEntity);
+        return categoryMapper.toCategoryDto(updatedEntity);
     }
 
     @Override
@@ -58,24 +59,24 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = repository.findById(catId)
                 .orElseThrow(() -> new NoSuchElementException("Category was not found"));
         log.info("Category with id #{} got", catId);
-        return CategoryMapper.INSTANCE.toCategoryDto(category);
+        return categoryMapper.toCategoryDto(category);
     }
 
     @Override
     public Collection<CategoryDto> getCategories(PageRequest pageRequest) {
         Collection<Category> categories = repository.findAllBy(pageRequest);
         log.info("Categories got, qty={}", categories.size());
-        return CategoryMapper.INSTANCE.toCategoryDtos(categories);
+        return categoryMapper.toCategoryDtos(categories);
     }
 
-    void isCategoryExist(Integer catId) {
+    private void isCategoryExist(Integer catId) {
         if (!repository.existsById(catId)) {
             throw new NoSuchElementException("Category with id=" + catId + " was not found");
         }
     }
 
 
-    void categoryValidation(Category category) {
+    private void categoryValidation(Category category) {
         String name = category.getName();
         if (name == null) {
             throw new ValidationException("Field: name. Error: must not be null. Value: null");
@@ -86,7 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    void isCategoryFree(Integer id) {
+    private void isCategoryFree(Integer id) {
         if (eventRepository.existsEventsByCategoryIdIs(id)) {
             throw new SecurityException("Category with id=" + id + " have links");
         }

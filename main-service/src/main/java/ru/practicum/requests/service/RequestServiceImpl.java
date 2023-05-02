@@ -22,10 +22,12 @@ import java.util.*;
 
 public class RequestServiceImpl implements RequestService {
     private static final Logger log = LoggerFactory.getLogger(RequestServiceImpl.class);
-    UserRepository userRepository;
-    EventRepository eventRepository;
-    RequestRepository requestRepository;
-    EventServiceImpl eventService;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+    private final RequestRepository requestRepository;
+    private final EventServiceImpl eventService;
+
+    private final RequestMapper requestMapper;
 
     @Override
     public Collection<ParticipationRequestDto> getUserRequests(Integer userId, PageRequest pageRequest) {
@@ -34,7 +36,7 @@ public class RequestServiceImpl implements RequestService {
         if (entities.isEmpty()) {
             entities = Collections.emptyList();
         }
-        return RequestMapper.INSTANCE.toParticipationRequestDtos(entities);
+        return requestMapper.toParticipationRequestDtos(entities);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class RequestServiceImpl implements RequestService {
         }
         ParticipationRequest createdEntity = requestRepository.save(entity);
         log.info("Request with id #{} cancelled", createdEntity.getId());
-        return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
+        return requestMapper.toParticipationRequestDto(createdEntity);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class RequestServiceImpl implements RequestService {
         if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             throw new RuntimeException("Participation limit is reached");
         }
-        ParticipationRequest entity = RequestMapper.INSTANCE.toParticipationRequest(request);
+        ParticipationRequest entity = requestMapper.toParticipationRequest(request);
         ParticipationRequest createdEntity = requestRepository.save(entity);
         log.info("Request with id #{} saved", createdEntity.getId());
         if (!event.getRequestModeration()) {
@@ -81,10 +83,10 @@ public class RequestServiceImpl implements RequestService {
                     request.getEvent(),
                     new EventRequestStatusUpdateRequest(requestIds, "CONFIRMED"));
         }
-        return RequestMapper.INSTANCE.toParticipationRequestDto(createdEntity);
+        return requestMapper.toParticipationRequestDto(createdEntity);
     }
 
-    Boolean isRequestExist(ParticipationRequestDto request) {
+    private Boolean isRequestExist(ParticipationRequestDto request) {
         Integer eventId = request.getEvent();
         Integer requesterId = request.getRequester();
         return requestRepository.existsByEventIsAndRequesterIs(eventId, requesterId);
