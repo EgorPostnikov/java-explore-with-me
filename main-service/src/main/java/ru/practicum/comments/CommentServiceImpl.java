@@ -14,6 +14,10 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository repository;
 
+    public CommentDto createComment(Integer userId, CommentDto requestDto) {
+        return null;
+    }
+
     @Override
     public CommentDto createComment(CommentDto requestDto) {
         return null;
@@ -34,7 +38,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Collection<CommentDto> getComments(PageRequest pageRequest) {
+    public Collection<CommentDto> getCommentsOfEvent(PageRequest pageRequest, Integer eventId) {
+        return null;
+    }
+
+    @Override
+    public Collection<CommentDto> getCommentsOfUser(PageRequest pageRequest, Integer userId) {
+        return null;
+    }
+
+    @Override
+    public CommentDto updateCommentByAuthor(Integer userId, Integer comId, CommentDto requestDto) {
         return null;
     }
 }

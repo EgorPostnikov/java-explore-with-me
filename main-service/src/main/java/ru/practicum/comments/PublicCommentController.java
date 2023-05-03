@@ -29,14 +29,15 @@ public class PublicCommentController {
         return service.getComment(comId);
     }
 
-    @GetMapping()
+    @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<CommentDto> getComments(
+    public Collection<CommentDto> getCommentsforEvent(
+            @PathVariable Integer eventId,
             @RequestParam(defaultValue = "0") Integer from,
             @RequestParam(defaultValue = "10") Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
         log.info("Get comments");
-        return service.getComments(pageRequest);
+        return service.getCommentsOfEvent(pageRequest,eventId);
     }
 
 

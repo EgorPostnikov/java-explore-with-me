@@ -13,5 +13,9 @@ public interface CommentService {
 
     CommentDto getComment(Integer comId);
 
-    Collection<CommentDto> getComments(PageRequest pageRequest);
+    Collection<CommentDto> getCommentsOfEvent(PageRequest pageRequest, Integer eventId);
+
+    Collection<CommentDto> getCommentsOfUser(PageRequest pageRequest, Integer userId);
+
+    CommentDto updateCommentByAuthor(Integer userId, Integer comId, CommentDto requestDto);
 }
