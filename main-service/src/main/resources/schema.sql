@@ -54,6 +54,13 @@ CREATE TABLE IF NOT EXISTS sets
     event_id int,
     CONSTRAINT pk_sets PRIMARY KEY(id));
 
+CREATE TABLE IF NOT EXISTS comments
+(   comment_id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL,
+    text  VARCHAR(512) NOT NULL,
+    event_id int,
+    author_id int,
+    created TIMESTAMP WITHOUT TIME ZONE,
+    CONSTRAINT pk_comments PRIMARY KEY(comment_id)    );
 
 ALTER TABLE events ADD FOREIGN KEY (location_id) REFERENCES locations (id);
 ALTER TABLE events ADD FOREIGN KEY (initiator_id) REFERENCES users (id);
@@ -62,7 +69,10 @@ ALTER TABLE requests ADD FOREIGN KEY (requester_id) REFERENCES users (id);
 ALTER TABLE requests ADD FOREIGN KEY (event_id) REFERENCES events (id);
 ALTER TABLE sets ADD FOREIGN KEY (event_id) REFERENCES events (id);
 ALTER TABLE sets ADD FOREIGN KEY (compilation_id) REFERENCES compilations (id);
+ALTER TABLE comments ADD FOREIGN KEY (author_id) REFERENCES users (id);
+ALTER TABLE comments ADD FOREIGN KEY (event_id) REFERENCES events (id);
 
+DELETE FROM comments CASCADE;
 DELETE FROM sets CASCADE;
 DELETE FROM compilations CASCADE;
 DELETE FROM requests CASCADE;
@@ -78,3 +88,4 @@ ALTER TABLE users ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE events ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE locations ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE categories ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE comments ALTER COLUMN comment_id RESTART WITH 1;
