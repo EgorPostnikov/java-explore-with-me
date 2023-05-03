@@ -14,14 +14,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "hits")
-@NamedNativeQuery(name = "ViewStats",
+@NamedNativeQuery(name = "ViewStatsUris",
         query = "SELECT s.app, s.uri, count(s.ip) AS qty FROM hits AS s" +
                 " WHERE s.uri IN ?1 AND s.timestamp >=?2 AND s.timestamp <=?3 " +
                 "GROUP BY s.app, s.uri ORDER BY qty DESC",
         resultSetMapping = "StatsDtoMapping")
-@NamedNativeQuery(name = "ViewStatsUnique",
+@NamedNativeQuery(name = "ViewStatsUniqueUris",
         query = "SELECT s.app, s.uri, count(DISTINCT s.ip) AS qty FROM hits AS s" +
                 " WHERE s.uri IN ?1 AND s.timestamp >=?2 AND s.timestamp <=?3 " +
+                "GROUP BY s.app, s.uri ORDER BY qty DESC",
+        resultSetMapping = "StatsDtoMapping")
+@NamedNativeQuery(name = "ViewStats",
+        query = "SELECT s.app, s.uri, count(s.ip) AS qty FROM hits AS s" +
+                " WHERE  s.timestamp >=?1 AND s.timestamp <=?2 " +
+                "GROUP BY s.app, s.uri ORDER BY qty DESC",
+        resultSetMapping = "StatsDtoMapping")
+@NamedNativeQuery(name = "ViewStatsUnique",
+        query = "SELECT s.app, s.uri, count(DISTINCT s.ip) AS qty FROM hits AS s" +
+                " WHERE  s.timestamp >=?1 AND s.timestamp <=?2 " +
                 "GROUP BY s.app, s.uri ORDER BY qty DESC",
         resultSetMapping = "StatsDtoMapping")
 @SqlResultSetMapping(name = "StatsDtoMapping",
