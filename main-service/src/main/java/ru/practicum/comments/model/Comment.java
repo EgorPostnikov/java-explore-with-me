@@ -1,4 +1,4 @@
-package ru.practicum.comments;
+package ru.practicum.comments.model;
 
 import lombok.*;
 

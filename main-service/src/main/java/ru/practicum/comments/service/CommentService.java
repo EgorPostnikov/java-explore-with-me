@@ -1,6 +1,7 @@
-package ru.practicum.comments;
+package ru.practicum.comments.service;
 
 import org.springframework.data.domain.PageRequest;
+import ru.practicum.comments.dto.CommentDto;
 
 import java.util.Collection;
 

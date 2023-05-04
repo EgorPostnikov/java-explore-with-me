@@ -1,4 +1,4 @@
-package ru.practicum.comments;
+package ru.practicum.comments.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.apiError.Response;
+import ru.practicum.comments.dto.CommentDto;
+import ru.practicum.comments.service.CommentService;
 
 import javax.validation.ValidationException;
 import java.util.NoSuchElementException;

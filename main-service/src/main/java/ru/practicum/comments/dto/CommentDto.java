@@ -1,7 +1,9 @@
-package ru.practicum.comments;
+package ru.practicum.comments.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
