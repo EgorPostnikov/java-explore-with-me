@@ -31,7 +31,7 @@ public class PublicCommentController {
         return service.getComment(comId);
     }
 
-    @GetMapping("/{eventId}")
+    @GetMapping("/{eventId}/event")
     @ResponseStatus(HttpStatus.OK)
     public Collection<CommentDto> getCommentsforEvent(
             @PathVariable Integer eventId,
