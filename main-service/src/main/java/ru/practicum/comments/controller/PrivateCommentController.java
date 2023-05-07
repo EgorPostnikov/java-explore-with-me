@@ -30,6 +30,7 @@ public class PrivateCommentController {
         log.info("Creating event {} by user {}", requestDto, userId);
         return service.createComment(userId, requestDto);
     }
+
     @PatchMapping("/{userId}/comments/{comId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentDto updateCommentByAuthor(@PathVariable() Integer userId,
@@ -38,6 +39,7 @@ public class PrivateCommentController {
         log.info("Updating comment {} by user {}, by data {}", comId, userId, requestDto);
         return service.updateCommentByAuthor(userId, comId, requestDto);
     }
+
     @GetMapping("/{userId}/comments")
     @ResponseStatus(HttpStatus.OK)
     public Collection<CommentDto> getCommentsOfUser(@PathVariable() Integer userId,
@@ -47,7 +49,6 @@ public class PrivateCommentController {
         log.info("Get all comments from {},size {}, for user {}", from, size, userId);
         return service.getCommentsOfUser(pageRequest, userId);
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchElementException.class)

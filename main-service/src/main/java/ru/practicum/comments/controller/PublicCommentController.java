@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.apiError.Response;
-import ru.practicum.comments.service.CommentService;
 import ru.practicum.comments.dto.CommentDto;
+import ru.practicum.comments.service.CommentService;
 
 import javax.validation.ValidationException;
 import java.util.Collection;
@@ -39,9 +39,8 @@ public class PublicCommentController {
             @RequestParam(defaultValue = "10") Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
         log.info("Get comments");
-        return service.getCommentsOfEvent(pageRequest,eventId);
+        return service.getCommentsOfEvent(pageRequest, eventId);
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException.class)
@@ -60,6 +59,5 @@ public class PublicCommentController {
     public Response handleException(NoSuchElementException exception) {
         return new Response(exception.getMessage());
     }
-
 
 }

@@ -10,7 +10,6 @@ import java.util.Collection;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-
     Collection<Comment> getCommentsByAuthorIdIs(Integer userId, PageRequest pageRequest);
 
     Collection<Comment> getCommentsByEventIdIs(Integer eventId, PageRequest pageRequest);

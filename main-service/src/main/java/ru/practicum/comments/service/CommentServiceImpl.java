@@ -38,11 +38,10 @@ public class CommentServiceImpl implements CommentService {
         if (!(Objects.equals(comment.getAuthorId(), userId))) {
             throw new ValidationException("User have not roots to update comment");
         }
-        Comment entity = commentMapper.toComment(newComment, userId);
         if (!newComment.getText().isEmpty()) {
             comment.setText(newComment.getText());
         }
-        Comment createdEntity = repository.save(entity);
+        Comment createdEntity = repository.save(comment);
         log.info("Comment {} with id #{} updated", createdEntity.getText(), createdEntity.getId());
         return commentMapper.toCommentDto(createdEntity);
     }
@@ -84,11 +83,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto updateComment(Integer comId, CommentDto requestDto) {
-        Comment entity = commentMapper.toComment(requestDto, requestDto.getAuthorId());
-        isCommentExist(comId);
-        entity.setId(comId);
-        commentValidation(entity);
-        Comment createdEntity = repository.save(entity);
+        Comment comment = repository.findById(comId)
+                .orElseThrow(() -> new NoSuchElementException("Comment was not found"));
+        Comment newComment = commentMapper.toComment(requestDto, requestDto.getAuthorId());
+        newComment.setId(comId);
+        commentValidation(newComment);
+        if (!newComment.getText().isEmpty()) {
+            comment.setText(newComment.getText());
+        }
+        Comment createdEntity = repository.save(comment);
         log.info("Comment {} with id #{} updated", createdEntity.getText(), createdEntity.getId());
         return commentMapper.toCommentDto(createdEntity);
     }
