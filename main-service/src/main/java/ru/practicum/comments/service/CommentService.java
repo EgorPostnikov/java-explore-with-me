@@ -6,7 +6,6 @@ import ru.practicum.comments.dto.CommentDto;
 import java.util.Collection;
 
 public interface CommentService {
-    CommentDto createComment(CommentDto requestDto);
 
     void deleteComment(Integer comId);
 

@@ -13,6 +13,7 @@ import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -34,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateCommentByAuthor(Integer userId, Integer comId, CommentDto newComment) {
         Comment comment = repository.findById(comId)
                 .orElseThrow(() -> new NoSuchElementException("Comment was not found"));
-        if (!(comment.getAuthorId() == userId)) {
+        if (!(Objects.equals(comment.getAuthorId(), userId))) {
             throw new ValidationException("User have not roots to update comment");
         }
         Comment entity = commentMapper.toComment(newComment, userId);
@@ -91,12 +92,6 @@ public class CommentServiceImpl implements CommentService {
         log.info("Comment {} with id #{} updated", createdEntity.getText(), createdEntity.getId());
         return commentMapper.toCommentDto(createdEntity);
     }
-
-    @Override
-    public CommentDto createComment(CommentDto requestDto) {
-        return null;
-    }
-
 
     private void isCommentExist(Integer comId) {
         if (!repository.existsById(comId)) {

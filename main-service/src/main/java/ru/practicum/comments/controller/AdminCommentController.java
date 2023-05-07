@@ -21,13 +21,6 @@ import java.util.NoSuchElementException;
     public class AdminCommentController {
         private final CommentService service;
 
-        @PostMapping()
-        @ResponseStatus(HttpStatus.CREATED)
-        public CommentDto createComment(@RequestBody CommentDto requestDto) {
-            log.info("Public comment {}", requestDto);
-            return service.createComment(requestDto);
-        }
-
         @DeleteMapping("/{comId}")
         @ResponseStatus(HttpStatus.NO_CONTENT)
         public void deleteComment(@PathVariable Integer comId) {
