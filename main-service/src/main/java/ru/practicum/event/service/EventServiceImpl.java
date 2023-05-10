@@ -20,7 +20,6 @@ import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -55,7 +54,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Event entity = eventMapper.toEvent(requestDto, user);
         if (entity.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
+            throw new RuntimeException("Дата и время на которые намечено событие не может быть раньше," +
                     " чем через два часа от текущего момента");
         }
         Event createdEntity = repository.save(entity);

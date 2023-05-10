@@ -1,6 +1,8 @@
 package ru.practicum.comments.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,5 +24,10 @@ public class Comment {
     private Integer eventId;
     @Column(name = "author_id")
     private Integer authorId;
-    private LocalDateTime created = LocalDateTime.now();
+    @CreationTimestamp
+    private LocalDateTime created;
+    @UpdateTimestamp
+    @Column(name = "updated_time")
+    private LocalDateTime updatedTime;
+    private Boolean updated;
 }

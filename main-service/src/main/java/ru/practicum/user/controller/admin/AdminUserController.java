@@ -8,8 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.apiError.ApiError;
-import ru.practicum.apiError.Response;
+import ru.practicum.exception.ApiError;
 import ru.practicum.user.dto.NewUserRequest;
 import ru.practicum.user.dto.UserDto;
 import ru.practicum.user.service.UserService;
@@ -17,7 +16,6 @@ import ru.practicum.user.service.UserService;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(path = "/admin/users")
@@ -60,15 +58,4 @@ public class AdminUserController {
         );
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(SecurityException.class)
-    public Response handleException(RuntimeException exception) {
-        return new Response(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoSuchElementException.class)
-    public Response handleException(NoSuchElementException exception) {
-        return new Response(exception.getMessage());
-    }
 }

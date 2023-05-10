@@ -1,4 +1,4 @@
-package ru.practicum.apiError;
+package ru.practicum.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

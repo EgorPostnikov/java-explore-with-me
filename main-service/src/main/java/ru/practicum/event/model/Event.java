@@ -49,5 +49,4 @@ public class Event {
     private String state = "PENDING";
     @Column(name = "created_on")
     private String createdOn = LocalDateTime.now().toString();
-
 }

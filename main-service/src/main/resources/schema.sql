@@ -60,7 +60,9 @@ CREATE TABLE IF NOT EXISTS comments
     event_id int,
     author_id int,
     created TIMESTAMP WITHOUT TIME ZONE,
-    CONSTRAINT pk_comments PRIMARY KEY(comment_id)    );
+    updated_time TIMESTAMP WITHOUT TIME ZONE,
+    updated BOOL,
+    CONSTRAINT pk_comments PRIMARY KEY(comment_id));
 
 ALTER TABLE events ADD FOREIGN KEY (location_id) REFERENCES locations (id);
 ALTER TABLE events ADD FOREIGN KEY (initiator_id) REFERENCES users (id);
