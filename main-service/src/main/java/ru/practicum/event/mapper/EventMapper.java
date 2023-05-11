@@ -40,6 +40,7 @@ public interface EventMapper {
 
     @Mapping(target = "eventDate", source = "eventDate", qualifiedBy = WithLocalDateToString.class)
     @Mapping(target = "id", source = "eventId")
+    @Mapping(target = "commentsQty", expression = "java(entity.getComments().size())")
     EventShortDto toEventShortDto(Event entity);
 
     Collection<EventShortDto> toEventShortDtos(Collection<Event> entities);
