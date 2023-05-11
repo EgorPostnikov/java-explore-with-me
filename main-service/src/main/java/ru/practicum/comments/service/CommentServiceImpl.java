@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.comments.dto.CommentDto;
 import ru.practicum.comments.dto.NewCommentDto;
 import ru.practicum.comments.dto.UpdateCommentDto;
 import ru.practicum.comments.mapper.CommentMapper;
@@ -11,6 +12,8 @@ import ru.practicum.comments.model.Comment;
 import ru.practicum.comments.repository.CommentRepository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
+import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
 
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
@@ -27,39 +30,43 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
     private final CommentMapper commentMapper;
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
-    public NewCommentDto createComment(Integer userId, NewCommentDto requestDto) {
-        Comment entity = commentMapper.toComment(requestDto, userId);
+    @Override
+    public CommentDto createComment(Integer userId, NewCommentDto requestDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Comment entity = commentMapper.toComment(requestDto, user);
         Event event = eventRepository.findById(entity.getEventId())
                 .orElseThrow(() -> new NoSuchElementException("Event was not found"));
         if (!event.getState().equals("PUBLISHED")) {
             throw new RuntimeException("Cannot comment the event because it's not the right state: PUBLISHED");
         }
-        entity.setUpdated(false);
+        entity.setRedacted(false);
         Comment createdEntity = repository.save(entity);
         log.info("Comment {} with id #{} saved", createdEntity.getText(), createdEntity.getId());
         return commentMapper.toCommentDto(createdEntity);
     }
 
     @Override
-    public NewCommentDto updateCommentByAuthor(Integer userId, Integer comId, UpdateCommentDto newComment) {
+    public CommentDto updateCommentByAuthor(Integer userId, Integer comId, UpdateCommentDto newComment) {
         Comment comment = repository.findById(comId)
                 .orElseThrow(() -> new NoSuchElementException("Comment was not found"));
-        if (!(Objects.equals(comment.getAuthorId(), userId))) {
+        if (!(Objects.equals(comment.getAuthor().getId(), userId))) {
             throw new ValidationException("User have not roots to update comment");
         }
         if (comment.getCreated().plusHours(1).isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Отредактировать комментарий можно только в течении часа после его публикации");
         }
         comment.setText(newComment.getText());
-        comment.setUpdated(true);
+        comment.setRedacted(true);
         Comment createdEntity = repository.save(comment);
         log.info("Comment {} with id #{} updated by user{}", createdEntity.getText(), createdEntity.getId(), userId);
         return commentMapper.toCommentDto(createdEntity);
     }
 
     @Override
-    public Collection<NewCommentDto> getCommentsOfUser(PageRequest pageRequest, Integer userId) {
+    public Collection<CommentDto> getCommentsOfUser(PageRequest pageRequest, Integer userId) {
         Collection<Comment> comments = repository.getCommentsByAuthorIdIs(userId, pageRequest);
         log.info("Comments of user {} got, qty={}", userId, comments.size());
         if (comments.isEmpty()) {
@@ -69,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public NewCommentDto getComment(Integer comId) {
+    public CommentDto getComment(Integer comId) {
         Comment comment = repository.findById(comId)
                 .orElseThrow(() -> new NoSuchElementException("Comment was not found"));
         log.info("Comment with id #{} got", comId);
@@ -77,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Collection<NewCommentDto> getCommentsOfEvent(PageRequest pageRequest, Integer eventId) {
+    public Collection<CommentDto> getCommentsOfEvent(PageRequest pageRequest, Integer eventId) {
         Collection<Comment> comments = repository.getCommentsByEventIdIs(eventId, pageRequest);
         log.info("Comments of event {} got, qty={}", eventId, comments.size());
         if (comments.isEmpty()) {
@@ -94,7 +101,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public NewCommentDto updateComment(Integer comId, UpdateCommentDto requestDto) {
+    public CommentDto updateComment(Integer comId, UpdateCommentDto requestDto) {
         Comment comment = repository.findById(comId)
                 .orElseThrow(() -> new NoSuchElementException("Comment was not found"));
         if (comment.getCreated().plusHours(1).isBefore(LocalDateTime.now())) {
@@ -102,7 +109,7 @@ public class CommentServiceImpl implements CommentService {
         }
         Comment newComment = commentMapper.toComment(requestDto);
         comment.setText(newComment.getText());
-        comment.setUpdated(true);
+        comment.setRedacted(true);
         Comment createdEntity = repository.save(comment);
         log.info("Comment {} with id #{} updated", createdEntity.getText(), createdEntity.getId());
         return commentMapper.toCommentDto(createdEntity);

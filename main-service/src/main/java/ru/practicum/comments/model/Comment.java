@@ -3,6 +3,7 @@ package ru.practicum.comments.model;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import ru.practicum.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,12 +23,15 @@ public class Comment {
     private String text;
     @Column(name = "event_id")
     private Integer eventId;
-    @Column(name = "author_id")
-    private Integer authorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private User author;
     @CreationTimestamp
     private LocalDateTime created;
     @UpdateTimestamp
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
-    private Boolean updated;
+    private Boolean redacted;
+
+
 }

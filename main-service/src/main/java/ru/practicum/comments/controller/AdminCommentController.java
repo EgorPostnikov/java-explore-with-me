@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.comments.dto.NewCommentDto;
+import ru.practicum.comments.dto.CommentDto;
 import ru.practicum.comments.dto.UpdateCommentDto;
 import ru.practicum.comments.service.CommentService;
 
@@ -26,8 +26,8 @@ public class AdminCommentController {
 
     @PatchMapping("/{comId}")
     @ResponseStatus(HttpStatus.OK)
-    public NewCommentDto updateComment(@Valid @RequestBody UpdateCommentDto requestDto,
-                                       @PathVariable Integer comId) {
+    public CommentDto updateComment(@Valid @RequestBody UpdateCommentDto requestDto,
+                                    @PathVariable Integer comId) {
         log.info("Updating comment {}", requestDto);
         return service.updateComment(comId, requestDto);
     }

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.comments.dto.NewCommentDto;
+import ru.practicum.comments.dto.CommentDto;
 import ru.practicum.comments.service.CommentService;
 
 import javax.validation.constraints.Positive;
@@ -25,16 +25,16 @@ public class PublicCommentController {
 
     @GetMapping("/{comId}")
     @ResponseStatus(HttpStatus.OK)
-    public NewCommentDto getComment(@PathVariable Integer comId) {
+    public CommentDto getComment(@PathVariable Integer comId) {
         log.info("Get comment #{}", comId);
         return service.getComment(comId);
     }
 
     @GetMapping("/{eventId}/event")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<NewCommentDto> getCommentsForEvent(@PathVariable Integer eventId,
-                                                         @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                                         @Positive @RequestParam(defaultValue = "10") Integer size) {
+    public Collection<CommentDto> getCommentsForEvent(@PathVariable Integer eventId,
+                                                      @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                      @Positive @RequestParam(defaultValue = "10") Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size, Sort.unsorted());
         log.info("Get comments");
         return service.getCommentsOfEvent(pageRequest, eventId);
