@@ -1,15 +1,15 @@
-package ru.practicum.categories.comments.service;
+package ru.practicum.comments.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.categories.comments.dto.CommentDto;
-import ru.practicum.categories.comments.dto.NewCommentDto;
-import ru.practicum.categories.comments.dto.UpdateCommentDto;
-import ru.practicum.categories.comments.model.Comment;
-import ru.practicum.categories.comments.mapper.CommentMapper;
-import ru.practicum.categories.comments.repository.CommentRepository;
+import ru.practicum.comments.dto.CommentDto;
+import ru.practicum.comments.dto.NewCommentDto;
+import ru.practicum.comments.dto.UpdateCommentDto;
+import ru.practicum.comments.model.Comment;
+import ru.practicum.comments.mapper.CommentMapper;
+import ru.practicum.comments.repository.CommentRepository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.user.model.User;

@@ -1,11 +1,11 @@
-package ru.practicum.categories.comments.mapper;
+package ru.practicum.comments.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.categories.comments.dto.CommentDto;
-import ru.practicum.categories.comments.dto.NewCommentDto;
-import ru.practicum.categories.comments.dto.UpdateCommentDto;
-import ru.practicum.categories.comments.model.Comment;
+import ru.practicum.comments.dto.CommentDto;
+import ru.practicum.comments.dto.NewCommentDto;
+import ru.practicum.comments.dto.UpdateCommentDto;
+import ru.practicum.comments.model.Comment;
 import ru.practicum.user.model.User;
 
 import java.util.Collection;

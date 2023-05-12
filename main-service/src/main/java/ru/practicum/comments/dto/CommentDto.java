@@ -1,4 +1,4 @@
-package ru.practicum.categories.comments.dto;
+package ru.practicum.comments.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

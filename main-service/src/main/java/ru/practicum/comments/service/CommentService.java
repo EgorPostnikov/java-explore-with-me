@@ -1,9 +1,9 @@
-package ru.practicum.categories.comments.service;
+package ru.practicum.comments.service;
 
 import org.springframework.data.domain.PageRequest;
-import ru.practicum.categories.comments.dto.CommentDto;
-import ru.practicum.categories.comments.dto.NewCommentDto;
-import ru.practicum.categories.comments.dto.UpdateCommentDto;
+import ru.practicum.comments.dto.CommentDto;
+import ru.practicum.comments.dto.NewCommentDto;
+import ru.practicum.comments.dto.UpdateCommentDto;
 
 import java.util.Collection;
 

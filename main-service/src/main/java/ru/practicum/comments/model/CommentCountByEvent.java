@@ -1,4 +1,4 @@
-package ru.practicum.categories.comments.model;
+package ru.practicum.comments.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
