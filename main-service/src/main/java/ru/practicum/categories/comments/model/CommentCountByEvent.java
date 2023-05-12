@@ -1,17 +1,15 @@
-package ru.practicum.comments.dto;
+package ru.practicum.categories.comments.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class NewCommentDto {
-
-    private String text;
+public class CommentCountByEvent {
     private Integer eventId;
+    private Long commentsCount;
 
 }
+

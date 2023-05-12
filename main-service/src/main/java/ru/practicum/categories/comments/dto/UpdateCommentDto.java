@@ -1,4 +1,4 @@
-package ru.practicum.comments.dto;
+package ru.practicum.categories.comments.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +16,5 @@ public class UpdateCommentDto {
     @Size(min = 1, max = 512)
     @NotBlank
     private String text;
-    private Integer eventId;
 
 }

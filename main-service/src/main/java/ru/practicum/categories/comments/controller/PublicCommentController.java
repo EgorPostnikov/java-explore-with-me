@@ -1,4 +1,4 @@
-package ru.practicum.comments.controller;
+package ru.practicum.categories.comments.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.comments.dto.CommentDto;
-import ru.practicum.comments.service.CommentService;
+import ru.practicum.categories.comments.dto.CommentDto;
+import ru.practicum.categories.comments.service.CommentService;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;

@@ -9,8 +9,6 @@ import ru.practicum.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -51,9 +49,5 @@ public class Event {
     private String state = "PENDING";
     @Column(name = "created_on")
     private String createdOn = LocalDateTime.now().toString();
-    @ElementCollection
-    @CollectionTable(name = "comments", joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "text")
-    private Set<String> comments = new HashSet<>();
 
 }
