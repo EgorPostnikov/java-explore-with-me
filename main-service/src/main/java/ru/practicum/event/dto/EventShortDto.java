@@ -8,6 +8,7 @@ import lombok.ToString;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.user.dto.UserShortDto;
 
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -22,5 +23,5 @@ public class EventShortDto {
     private Boolean paid;
     private String title;
     private Integer views;
-
+    private Integer commentsQty;
 }

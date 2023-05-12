@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.apiError.Response;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.NewCompilationDto;
 import ru.practicum.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.compilation.service.CompilationService;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
-import java.util.NoSuchElementException;
 
 
 @RestController
@@ -44,21 +41,4 @@ public class AdminCompilationController {
         return service.updateCompilation(compId, requestDto);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ValidationException.class)
-    public Response handleException(ValidationException exception) {
-        return new Response(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(SecurityException.class)
-    public Response handleException(RuntimeException exception) {
-        return new Response(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoSuchElementException.class)
-    public Response handleException(NoSuchElementException exception) {
-        return new Response(exception.getMessage());
-    }
 }

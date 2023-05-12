@@ -6,15 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.apiError.Response;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.service.EventServiceImpl;
 import ru.practicum.requests.dto.ParticipationRequestDto;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 
 @RestController
@@ -79,22 +76,5 @@ public class PrivateEventController {
         return service.changeEventsRequestStatus(userId, eventId, updateRequest);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NoSuchElementException.class)
-    public Response handleException(NoSuchElementException exception) {
-        return new Response(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EntityNotFoundException.class)
-    public Response handleException(EntityNotFoundException exception) {
-        return new Response(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(RuntimeException.class)
-    public Response handleException(RuntimeException exception) {
-        return new Response(exception.getMessage());
-    }
 
 }

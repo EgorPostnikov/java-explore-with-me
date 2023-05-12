@@ -1,4 +1,4 @@
-package ru.practicum.apiError;
+package ru.practicum.exception;
 
 public class Response {
     private String message;

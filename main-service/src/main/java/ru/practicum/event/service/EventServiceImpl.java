@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.StatsClient;
 import ru.practicum.dto.StatsDto;
 import ru.practicum.dto.StatsRequestDto;
+import ru.practicum.comments.model.CommentCountByEvent;
+import ru.practicum.comments.repository.CommentRepository;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
@@ -20,7 +22,6 @@ import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -33,6 +34,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository repository;
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
+    private final CommentRepository commentRepository;
     private final StatsClient statsClient;
     private final EventMapper eventMapper;
     private final RequestMapper requestMapper;
@@ -46,6 +48,7 @@ public class EventServiceImpl implements EventService {
         if (events.isEmpty()) {
             events = Collections.emptyList();
         }
+        events = addCommentsQty(events);
         return events;
     }
 
@@ -55,7 +58,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Event entity = eventMapper.toEvent(requestDto, user);
         if (entity.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
+            throw new RuntimeException("Дата и время на которые намечено событие не может быть раньше," +
                     " чем через два часа от текущего момента");
         }
         Event createdEntity = repository.save(entity);
@@ -272,6 +275,7 @@ public class EventServiceImpl implements EventService {
         }
         entities = addViews(entities);
         Collection<EventShortDto> events = eventMapper.toEventShortDtos(entities);
+        events = addCommentsQty(events);
         log.info("Events get, events qty is {}", events.size());
         return events;
     }
@@ -361,5 +365,20 @@ public class EventServiceImpl implements EventService {
         sortedEvents.sort(comparator);
         return sortedEvents;
     }
+
+    public Collection<EventShortDto> addCommentsQty(Collection<EventShortDto> events) {
+        Collection<Integer> eventIds = new ArrayList<>();
+        HashMap<Integer, EventShortDto> eventMap = new HashMap<>();
+        for (EventShortDto event : events) {
+            eventIds.add(event.getId());
+            eventMap.put(event.getId(), event);
+        }
+        Collection<CommentCountByEvent> commentsQty = commentRepository.countEventsByEvent(eventIds);
+        for (CommentCountByEvent count : commentsQty) {
+            eventMap.get(count.getEventId()).setCommentsQty(Math.toIntExact(count.getCommentsCount()));
+        }
+        return eventMap.values();
+    }
+
 
 }

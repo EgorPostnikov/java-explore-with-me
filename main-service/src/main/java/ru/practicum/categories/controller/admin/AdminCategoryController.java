@@ -5,15 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.apiError.ApiError;
-import ru.practicum.apiError.Response;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.NewCategoryDto;
 import ru.practicum.categories.service.CategoryService;
 
 import javax.validation.ValidationException;
-import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 
 @RestController
@@ -48,25 +44,5 @@ public class AdminCategoryController {
         return service.updateCategory(catId, requestDto);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ValidationException.class)
-    public ApiError handleException(ValidationException exception) {
-        return new ApiError(exception.getMessage(),
-                HttpStatus.BAD_REQUEST.toString(),
-                LocalDateTime.now().toString()
-        );
-    }
-
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(SecurityException.class)
-    public Response handleException(RuntimeException exception) {
-        return new Response(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoSuchElementException.class)
-    public Response handleException(NoSuchElementException exception) {
-        return new Response(exception.getMessage());
-    }
 
 }
