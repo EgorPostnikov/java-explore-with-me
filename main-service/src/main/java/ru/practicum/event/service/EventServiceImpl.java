@@ -275,7 +275,7 @@ public class EventServiceImpl implements EventService {
         }
         entities = addViews(entities);
         Collection<EventShortDto> events = eventMapper.toEventShortDtos(entities);
-        events=addCommentsQty(events);
+        events = addCommentsQty(events);
         log.info("Events get, events qty is {}", events.size());
         return events;
     }
